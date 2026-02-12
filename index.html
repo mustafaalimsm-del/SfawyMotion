@@ -33,35 +33,39 @@
         .btn-nav { background: var(--primary); color: black; padding: 8px 15px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; }
 
         .main-content { flex: 1; padding: 20px; max-width: 600px; margin: 0 auto; width: 100%; }
-        .post-card { background: var(--glass); border-radius: 20px; border: 1px solid #222; margin-bottom: 25px; padding: 20px; position: relative; }
+        .post-card { background: var(--glass); border-radius: 20px; border: 1px solid #222; margin-bottom: 25px; padding: 20px; }
         .user-info { display: flex; align-items: center; margin-bottom: 10px; }
-        .user-info img { width: 30px; height: 30px; border-radius: 50%; margin-left: 10px; border: 1px solid var(--primary); }
-        video { width: 100%; border-radius: 12px; background: #000; margin-top: 10px; }
+        .user-info img { width: 35px; height: 35px; border-radius: 50%; margin-left: 10px; border: 1px solid var(--primary); }
+        video { width: 100%; border-radius: 12px; background: #000; margin-top: 10px; border: 1px solid #333; }
         
         .btn-unlock { background: linear-gradient(45deg, var(--secondary), #ff4d8d); color: white; width: 100%; padding: 12px; border-radius: 10px; border: none; cursor: pointer; margin-top: 15px; font-weight: bold; }
         
-        footer { padding: 30px; text-align: center; background: #000; border-top: 1px solid #222; font-size: 0.9rem; color: #888; }
+        footer { padding: 25px; text-align: center; background: #000; border-top: 1px solid #222; font-size: 0.8rem; color: #666; }
 
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: none; justify-content: center; align-items: center; z-index: 2000; }
         .modal-box { background: #1a1a1a; padding: 25px; border-radius: 20px; width: 90%; max-width: 450px; border: 1px solid #333; }
         input, textarea { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #333; border-radius: 8px; background: #000; color: white; text-align: right; }
 
-        #ad-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
-        .ad-timer-text { font-size: 4rem; color: var(--primary); font-weight: bold; }
+        /* شاشة الإعلان الذكية */
+        #ad-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #050505; z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+        .loader-ring { width: 80px; height: 80px; border: 5px solid #111; border-top: 5px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .ad-timer-num { font-size: 3rem; color: white; font-weight: 900; margin-bottom: 10px; }
     </style>
 </head>
 <body>
 
     <div id="ad-overlay">
-        <p id="ad-status" style="margin-bottom: 20px; font-size: 1.2rem;">مرحباً بك في صفاوي موشن...</p>
-        <div class="ad-timer-text" id="ad-timer">5</div>
+        <div class="loader-ring"></div>
+        <div class="ad-timer-num" id="ad-timer">5</div>
+        <p id="ad-status" style="color: #888; letter-spacing: 1px;">جاري المعالجة...</p>
     </div>
 
     <nav>
         <a href="#" class="logo">صفاوي <span>موشن</span></a>
         <div id="auth-zone">
             <button class="btn-nav" id="btnRegister" onclick="openModal('loginModal')">دخول</button>
-            <button class="btn-nav" id="btnPublish" style="display:none; background:white;" onclick="openModal('publishModal')">+ انشر الآن</button>
+            <button class="btn-nav" id="btnPublish" style="display:none; background:white;" onclick="openModal('publishModal')">+ انشر إبداعك</button>
         </div>
     </nav>
 
@@ -69,23 +73,23 @@
 
     <div id="loginModal" class="modal">
         <div class="modal-box">
-            <h3>تسجيل الدخول 📱</h3>
-            <input type="text" id="uName" placeholder="اكتب اسمك المستعار (إجباري)">
+            <h3>مرحباً بك 📱</h3>
+            <input type="text" id="uName" placeholder="الاسم المستعار (يظهر للجميع)">
             <input type="text" id="uHandle" placeholder="يوزر الحساب (اختياري)">
-            <button class="btn-nav" style="width:100%; margin-top:10px;" onclick="saveProfile()">دخول</button>
+            <button class="btn-nav" style="width:100%; margin-top:10px;" onclick="saveProfile()">ابدأ الآن</button>
         </div>
     </div>
 
     <div id="publishModal" class="modal">
         <div class="modal-box">
-            <h3>نشر جديد 🚀</h3>
-            <textarea id="pDesc" placeholder="ماذا يدور في ذهنك؟"></textarea>
-            <label>اختر الفيديو:</label>
+            <h3>نشر موشن 🚀</h3>
+            <textarea id="pDesc" placeholder="عن ماذا يتحدث الموشن؟"></textarea>
+            <label style="font-size: 0.8rem; color: var(--primary);">الفيديو (MP4):</label>
             <input type="file" id="pVidFile" accept="video/*">
-            <label>اختر الصورة الحصرية:</label>
+            <label style="font-size: 0.8rem; color: var(--primary);">الصورة الحصرية (JPG/PNG):</label>
             <input type="file" id="pImgFile" accept="image/*">
-            <button class="btn-nav" id="uploadBtn" style="width:100%; margin-top:20px;" onclick="submitPost()">نشر الآن</button>
-            <p onclick="closeModals()" style="color:red; cursor:pointer; margin-top:15px; text-align:center;">إلغاء</p>
+            <button class="btn-nav" id="uploadBtn" style="width:100%; margin-top:20px;" onclick="handlePublishWithAd()">نشر الموشن</button>
+            <p onclick="closeModals()" style="color:#555; cursor:pointer; margin-top:15px; text-align:center;">إلغاء</p>
         </div>
     </div>
 
@@ -97,21 +101,31 @@
         const ADMIN_PASS = "safawy123"; 
 
         window.onload = function() {
-            showAdTimer("جاري تهيئة النظام...", 5, () => {
+            // إعلان عند دخول الموقع
+            runAd("جاري تهيئة منصة صفاوي موشن...", 5, () => {
                 checkUserStatus();
             });
         };
 
-        function showAdTimer(msg, seconds, callback) {
+        // محرك الإعلانات الموحد (5 ثوانٍ)
+        function runAd(msg, seconds, callback) {
             const overlay = document.getElementById('ad-overlay');
             const timer = document.getElementById('ad-timer');
-            document.getElementById('ad-status').innerText = msg;
+            const status = document.getElementById('ad-status');
+            status.innerText = msg;
             overlay.style.display = 'flex';
+            
             let count = seconds;
             timer.innerText = count;
+            
             let interval = setInterval(() => {
-                count--; timer.innerText = count;
-                if(count <= 0) { clearInterval(interval); overlay.style.display = 'none'; if(callback) callback(); }
+                count--;
+                timer.innerText = count;
+                if(count <= 0) {
+                    clearInterval(interval);
+                    overlay.style.display = 'none';
+                    if(callback) callback();
+                }
             }, 1000);
         }
 
@@ -126,13 +140,10 @@
         function saveProfile() {
             const name = document.getElementById('uName').value.trim();
             const handle = document.getElementById('uHandle').value.trim();
-            
-            if(!name) return alert("يرجى كتابة اسمك المستعار!");
-
+            if(!name) return alert("الاسم مطلوب!");
             const isAdmin = (handle === ADMIN_PASS);
             const userData = { 
                 name: isAdmin ? "المدير صفاوي 😎" : name, 
-                handle: isAdmin ? "admin" : (handle || "user"), 
                 role: isAdmin ? "admin" : "user" 
             };
             localStorage.setItem('safawy_user', JSON.stringify(userData));
@@ -149,7 +160,7 @@
                 const postId = doc.id;
                 const post = document.createElement('div');
                 post.className = 'post-card';
-                const deleteBtn = (user.role === 'admin') ? `<button onclick="deletePost('${postId}')" style="float:left; color:red; background:none; border:none; cursor:pointer;">حذف 🗑️</button>` : '';
+                const deleteBtn = (user.role === 'admin') ? `<button onclick="deletePost('${postId}')" style="float:left; color:#ff0050; background:none; border:none; cursor:pointer; font-size:0.7rem;">حذف 🗑️</button>` : '';
 
                 post.innerHTML = `
                     <div class="user-info">
@@ -157,23 +168,37 @@
                         <strong>${data.userName}</strong>
                         ${deleteBtn}
                     </div>
-                    <p>${data.desc}</p>
+                    <p style="font-size:0.9rem; line-height:1.4;">${data.desc}</p>
                     <video controls src="${data.vidUrl}"></video>
                     <div id="lock-${postId}">
                         <button class="btn-unlock" onclick="unlockSecret('${postId}')">فتح المحتوى الحصري</button>
                     </div>
                     <div id="secret-${postId}" style="display:none;">
-                        <img src="${data.imgUrl}" style="width:100%; border-radius:12px; margin-top:15px; border:1px solid var(--primary);">
+                        <img src="${data.imgUrl}" style="width:100%; border-radius:12px; margin-top:15px; border:2px solid var(--primary);">
                     </div>
                 `;
                 feed.append(post);
             });
         });
 
+        // إعلان عند الحصول على المحتوى الحصري
         function unlockSecret(id) {
-            showAdTimer("جاري فك التشفير...", 5, () => {
+            runAd("جاري فك تشفير البيانات الحصرية...", 5, () => {
                 document.getElementById(`lock-${id}`).style.display = 'none';
                 document.getElementById(`secret-${id}`).style.display = 'block';
+            });
+        }
+
+        // إعلان عند النشر
+        function handlePublishWithAd() {
+            const desc = document.getElementById('pDesc').value;
+            const vidFile = document.getElementById('pVidFile').files[0];
+            const imgFile = document.getElementById('pImgFile').files[0];
+
+            if(!desc || !vidFile || !imgFile) return alert("أكمل بيانات المنشور!");
+
+            runAd("جاري تأمين وفحص الموشن قبل الرفع...", 5, () => {
+                submitPost(desc, vidFile, imgFile);
             });
         }
 
@@ -184,38 +209,31 @@
             reader.onerror = error => reject(error);
         });
 
-        async function submitPost() {
-            const desc = document.getElementById('pDesc').value;
-            const vidFile = document.getElementById('pVidFile').files[0];
-            const imgFile = document.getElementById('pImgFile').files[0];
-            const user = JSON.parse(localStorage.getItem('safawy_user'));
+        async function submitPost(desc, vidFile, imgFile) {
             const btn = document.getElementById('uploadBtn');
-
-            if(!desc || !vidFile || !imgFile) return alert("أكمل البيانات!");
-
-            btn.innerText = "جاري الرفع... ⏳";
+            const user = JSON.parse(localStorage.getItem('safawy_user'));
+            
+            btn.innerText = "جاري الرفع النهائي... ⏳";
             btn.disabled = true;
 
             try {
                 const vidBase64 = await toBase64(vidFile);
                 const imgBase64 = await toBase64(imgFile);
-
                 await db.collection('all_posts').add({
-                    desc: desc,
-                    vidUrl: vidBase64,
-                    imgUrl: imgBase64,
-                    userName: user.name, // سيخزن الاسم فقط للعرض
+                    desc, vidUrl: vidBase64, imgUrl: imgBase64,
+                    userName: user.name,
                     time: firebase.firestore.FieldValue.serverTimestamp()
                 });
                 location.reload();
             } catch (e) {
-                alert("فشل الرفع");
+                alert("حدث خطأ أثناء الرفع");
                 btn.disabled = false;
+                btn.innerText = "نشر الآن";
             }
         }
 
         async function deletePost(id) {
-            if(confirm("حذف؟")) await db.collection('all_posts').doc(id).delete();
+            if(confirm("حذف هذا الموشن؟")) await db.collection('all_posts').doc(id).delete();
         }
 
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
