@@ -153,7 +153,6 @@
             alert("أهلاً بك يا ناشر! يمكنك الآن إضافة محتواك.");
         }
 
-        
         async function submitPost() {
     const desc = document.getElementById('pDesc').value;
     const vidFile = document.getElementById('pVid').files[0];
@@ -162,10 +161,10 @@
 
     if (!desc || !vidFile || !imgFile) return alert("يرجى اختيار فيديو وصورة ووصف!");
 
-    alert("جاري الرفع العالمي للأبد... قد يستغرق الفيديو دقيقة، لا تغلق الصفحة!");
+    alert("جاري الرفع العالمي للأبد... لا تغلق الصفحة");
 
     try {
-        // 1. رفع الصورة بشكل دائم (ImgBB)
+        // 1. رفع الصورة (ImgBB)
         const imgFormData = new FormData();
         imgFormData.append("image", imgFile);
         const imgRes = await fetch("https://api.imgbb.com/1/upload?key=81c3c9716e254070775080076a0a0346", {
@@ -175,19 +174,19 @@
         const imgData = await imgRes.json();
         const imgUrl = imgData.data.url;
 
-        // 2. رفع الفيديو بشكل دائم (Cloudinary - الرفع السحابي المجاني)
+        // 2. رفع الفيديو (Cloudinary بالرابط الجديد dj7m6v8p1)
         const vidFormData = new FormData();
         vidFormData.append("file", vidFile);
-        vidFormData.append("upload_preset", "ml_default"); // إعداد افتراضي للرفع المجاني
+        vidFormData.append("upload_preset", "ml_default");
         
-        const vidRes = await fetch("https://api.cloudinary.com/v1_1/demo/video/upload", {
+        const vidRes = await fetch("https://api.cloudinary.com/v1_1/dj7m6v8p1/video/upload", {
             method: "POST",
             body: vidFormData
         });
         const vidData = await vidRes.json();
         const vidUrl = vidData.secure_url;
 
-        // 3. حفظ الروابط الدائمة في قاعدة بياناتك (التي فعلتها أنت بنجاح)
+        // 3. الحفظ في Firebase Firestore (التي جعلتها أنت True)
         await db.collection('all_posts').add({
             desc: desc,
             vidUrl: vidUrl,
@@ -197,13 +196,14 @@
             time: firebase.firestore.FieldValue.serverTimestamp()
         });
 
-        alert("تم النشر بنجاح باهر! منشورك الآن يراه العالم كله.");
+        alert("تم النشر بنجاح باهر! صفاوي موشن الآن لايف.");
         location.reload();
     } catch (e) {
         console.error(e);
         alert("حدث خطأ بسيط، حاول مرة أخرى أو تأكد من حجم الفيديو.");
     }
         }
+        
         
         
 
