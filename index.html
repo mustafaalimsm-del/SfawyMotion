@@ -151,15 +151,21 @@ window.onload = function() {
         }
 
         function saveProfile() {
-            const name = document.getElementById('uName').value;
-            const handle = document.getElementById('uHandle').value;
-            if(!name || !handle) return alert("يرجى كتابة الاسم واليوزر");
-            
-            document.getElementById('btnRegister').style.display = 'none';
-            document.getElementById('btnPublish').style.display = 'block';
-            closeModals();
-            alert("أهلاً بك يا ناشر! يمكنك الآن إضافة محتواك.");
+    const name = document.getElementById('uName').value;
+    const handle = document.getElementById('uHandle').value;
+    if (!name || !handle) return alert("يرجى كتابة الاسم واليوزر");
+
+    const userData = { name: name, handle: handle };
+    
+    // هذا هو السطر المفقود الذي يجعل المتصفح يتذكرك للأبد
+    localStorage.setItem('safawy_user', JSON.stringify(userData));
+
+    document.getElementById('btnRegister').style.display = 'none';
+    document.getElementById('btnPublish').style.display = 'block';
+    closeModals();
+    alert("أهلاً بك يا ناشر! يمكنك الآن إضافة محتواك");
         }
+        
 
       async function submitPost() {
     const desc = document.getElementById('pDesc').value;
