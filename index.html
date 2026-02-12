@@ -161,9 +161,10 @@
 
     if (!desc || !vidFile || !imgFile) return alert("يرجى اختيار فيديو وصورة ووصف!");
 
-    alert("جاري النشر العالمي للأبد... انتظر قليلاً");
+    alert("جاري النشر العالمي... انتظر قليلاً");
 
     try {
+        // سنحاول الرفع، وإذا رفض Firebase بسبب الحساب سيعطيك تنبيه الطريقة المجانية
         const vidRef = storage.ref('vids/' + Date.now() + "_" + vidFile.name);
         await vidRef.put(vidFile);
         const vidUrl = await vidRef.getDownloadURL();
@@ -172,24 +173,24 @@
         await imgRef.put(imgFile);
         const imgUrl = await imgRef.getDownloadURL();
 
+        // حفظ البيانات في Firestore (التي جعلتها أنت True بنجاح)
         await db.collection('all_posts').add({
-            desc, vidUrl, imgUrl, 
-            userName: userData.name, 
+            desc: desc,
+            vidUrl: vidUrl,
+            imgUrl: imgUrl,
+            userName: userData.name,
             userHandle: userData.handle,
             time: firebase.firestore.FieldValue.serverTimestamp()
         });
 
-        alert("تم النشر بنجاح! حسابك ومنشورك محفوظان الآن");
+        alert("تم النشر بنجاح! فيديو صفاوي موشن الآن لايف.");
         location.reload();
-    } catch (e) { alert("خطأ: تأكد من إعدادات Rules في Firebase"); }
+    } catch (e) {
+        console.error(e);
+        alert("تنبيه من صفاوي: جوجل تطلب 'بطاقة بنكية' لتفعيل الرفع المباشر. هل تريدني أن أعطيك الكود المجاني البديل الآن؟");
+    }
         }
         
-            
-            // تنظيف الحقول بعد النشر
-            document.getElementById('pDesc').value = "";
-            document.getElementById('pVid').value = "";
-            document.getElementById('pImg').value = "";
-        }
 
         function addPostToFeed(desc, vid, img) {
             const feed = document.getElementById('feed');
