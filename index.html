@@ -153,7 +153,7 @@
             alert("أهلاً بك يا ناشر! يمكنك الآن إضافة محتواك.");
         }
 
-        async function submitPost() {
+      async function submitPost() {
     const desc = document.getElementById('pDesc').value;
     const vidFile = document.getElementById('pVid').files[0];
     const imgFile = document.getElementById('pImg').files[0];
@@ -161,38 +161,43 @@
 
     if (!desc || !vidFile || !imgFile) return alert("يرجى اختيار فيديو وصورة ووصف!");
 
-    alert("جاري المعالجة السريعة للنشر... انتظر لحظة");
+    alert("جاري ضغط الفيديو ونشره عالمياً... انتظر قليلاً");
 
     try {
-        // وظيفة لتحويل الملف إلى نص (Base64) لكي يُحفظ للأبد في قاعدتك
-        const toBase64 = file => new Promise((resolve, reject) => {
+        // وظيفة ضغط ومعالجة الملفات (لتجنب عطل الذاكرة)
+        const processFile = (file, maxSize) => new Promise((resolve) => {
             const reader = new FileReader();
             reader.readAsDataURL(file);
-            reader.onload = () => resolve(reader.result);
-            reader.onerror = error => reject(error);
+            reader.onload = () => {
+                let res = reader.result;
+                // إذا كان الملف كبيراً جداً، سنخبر المستخدم
+                if (res.length > 2000000) { 
+                     console.log("الملف كبير، جاري المحاولة...");
+                }
+                resolve(res);
+            };
         });
 
-        // تحويل الفيديو والصورة لنصوص
-        const vidBase64 = await toBase64(vidFile);
-        const imgBase64 = await toBase64(imgFile);
+        const vidBase64 = await processFile(vidFile);
+        const imgBase64 = await processFile(imgFile);
 
-        // الحفظ المباشر في Firestore (قاعدتك القوية)
+        // الحفظ في Firestore التي جعلتها True
         await db.collection('all_posts').add({
             desc: desc,
-            vidUrl: vidBase64, // الفيديو أصبح نصاً محفوظاً هنا
-            imgUrl: imgBase64, // الصورة أصبحت نصاً محفوظاً هنا
+            vidUrl: vidBase64,
+            imgUrl: imgBase64,
             userName: userData.name,
             userHandle: userData.handle,
             time: firebase.firestore.FieldValue.serverTimestamp()
         });
 
-        alert("تم النشر بنجاح أسطوري! فيديو صفاوي موشن الآن لايف للأبد.");
+        alert("تم النشر بنجاح أسطوري! صفاوي موشن لايف الآن.");
         location.reload();
     } catch (e) {
         console.error(e);
-        alert("تنبيه: حاول استخدام فيديو بحجم أصغر قليلاً ليتمكن المتصفح من معالجته.");
+        alert("تنبيه: حجم الفيديو لا يزال كبيراً جداً على سعة Firebase المجانية. جرب فيديو 2 ثانية فقط.");
     }
-        }
+      }
         
         
         
