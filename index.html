@@ -52,11 +52,10 @@
 <body>
 
     <div id="ad-overlay">
-        <p id="ad-status" style="margin-bottom: 20px;">جاري تجهيز المحتوى الحصري...</p>
+        <p id="ad-status" style="margin-bottom: 20px;">جاري تجهيز الموقع العالمي...</p>
         <div class="ad-timer-text" id="ad-timer">5</div>
         <div style="margin-top: 20px; width: 300px; height: 250px; background: #222;">
-            <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4660461160504958" data-ad-slot="1234567890" data-ad-format="auto" data-full-width-responsive="true"></ins>
-            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+            <p style="font-size: 0.7rem; color: #555;">إعلان مدعوم</p>
         </div>
     </div>
 
@@ -68,127 +67,126 @@
         </div>
     </nav>
 
-    <div class="main-content" id="feed">
-        <p style="text-align: center; color: #888;">جاري جلب الفيديوهات...</p>
-    </div>
+    <div class="main-content" id="feed"></div>
 
     <div id="loginModal" class="modal">
         <div class="modal-box">
-            <h3 style="margin-bottom:15px;">ربط حساب تيك توك 📱</h3>
+            <h3>ربط حساب تيك توك 📱</h3>
             <input type="text" id="uName" placeholder="اسمك المستعار">
-            <input type="text" id="uHandle" placeholder="يوزر تيك توك (بدون @)">
-            <button class="btn-nav" style="width:100%; margin-top:10px;" onclick="saveProfile()">ابدأ النشر الآن</button>
+            <input type="text" id="uHandle" placeholder="يوزر تيك توك (أو كلمة السر للأدمن)">
+            <button class="btn-nav" style="width:100%; margin-top:10px;" onclick="saveProfile()">دخول</button>
             <p onclick="closeModals()" style="color:red; cursor:pointer; margin-top:15px; text-align:center;">إلغاء</p>
         </div>
     </div>
 
     <div id="publishModal" class="modal">
         <div class="modal-box">
-            <h3>انشر محتوى جديد 🚀</h3>
-            <textarea id="pDesc" placeholder="وصف الفيديو..."></textarea>
-            <input type="text" id="pVidUrl" placeholder="رابط فيديو تيك توك">
-            <input type="text" id="pImgUrl" placeholder="رابط الصورة الحصرية">
-            <button class="btn-nav" style="width:100%" onclick="submitPost()">نشر عالمي</button>
-            <p onclick="closeModals()" style="color:red; cursor:pointer; margin-top:15px; text-align:center;">إلغاء</p>
+            <h3>انشر إبداعك 🚀</h3>
+            <textarea id="pDesc" placeholder="ماذا يدور في ذهنك؟"></textarea>
+            <label>اختر الفيديو:</label>
+            <input type="file" id="pVid" accept="video/*">
+            <label>اختر صورة الغلاف:</label>
+            <input type="file" id="pImg" accept="image/*">
+            <button class="btn-nav" id="uploadBtn" style="width:100%" onclick="submitPost()">نشر الآن</button>
+            <p onclick="closeModals()" id="cancelBtn" style="color:red; cursor:pointer; margin-top:15px; text-align:center;">إلغاء</p>
         </div>
     </div>
 
     <script>
-        // 1. تذكر الحساب وإعلان الدخول
+        const ADMIN_KEY = "safawy123"; // كلمة سر الأدمن الخاصة بك
+
         window.onload = function() {
-            showAd("مرحباً بك في صفاوي موشن...", 5); // إعلان الدخول
-            const savedUser = localStorage.getItem('safawy_user');
-            if (savedUser) {
+            showAd("مرحباً بك في صفاوي موشن Pro...", 5);
+            checkUser();
+        };
+
+        function checkUser() {
+            const user = JSON.parse(localStorage.getItem('safawy_user'));
+            if (user) {
                 document.getElementById('btnRegister').style.display = 'none';
                 document.getElementById('btnPublish').style.display = 'block';
             }
-        };
+        }
 
-        // 2. نظام الإعلانات المطور
         function showAd(msg, seconds, callback) {
             const overlay = document.getElementById('ad-overlay');
             const timer = document.getElementById('ad-timer');
-            const status = document.getElementById('ad-status');
-            
-            status.innerText = msg;
+            document.getElementById('ad-status').innerText = msg;
             overlay.style.display = 'flex';
             let count = seconds;
             timer.innerText = count;
-
             let interval = setInterval(() => {
-                count--;
-                timer.innerText = count;
-                if(count <= 0) {
-                    clearInterval(interval);
-                    overlay.style.display = 'none';
-                    if(callback) callback();
-                }
+                count--; timer.innerText = count;
+                if(count <= 0) { clearInterval(interval); overlay.style.display = 'none'; if(callback) callback(); }
             }, 1000);
         }
 
-        // إعلان صوري كل دقيقة لزيادة الأرباح
-        setInterval(() => {
-            if(document.getElementById('ad-overlay').style.display !== 'flex') {
-                showAd("جاري تحديث السيرفرات لضمان السرعة...", 3);
-            }
-        }, 60000);
+        setInterval(() => { if(document.getElementById('ad-overlay').style.display !== 'flex') showAd("تحديث جودة البث...", 3); }, 120000);
 
-        // 3. التسجيل والحفظ (فكرة تيك توك)
         function saveProfile() {
             const name = document.getElementById('uName').value;
             const handle = document.getElementById('uHandle').value.replace('@', '');
-            if(!name || !handle) return alert("املأ بياناتك يا بطل!");
-
-            const userData = { name: name, handle: handle };
+            if(!handle) return;
+            const isAdmin = (handle === ADMIN_KEY);
+            const userData = { name: isAdmin ? "المدير صفاوي" : name, handle: handle, role: isAdmin ? "admin" : "user" };
             localStorage.setItem('safawy_user', JSON.stringify(userData));
             location.reload();
         }
 
-        // 4. جلب وعرض المنشورات
         db.collection('all_posts').orderBy('time', 'desc').onSnapshot(snapshot => {
             const feed = document.getElementById('feed');
             feed.innerHTML = '';
+            const user = JSON.parse(localStorage.getItem('safawy_user')) || {};
             snapshot.forEach(doc => {
                 const data = doc.data();
                 const post = document.createElement('div');
                 post.className = 'post-card';
+                const deleteUI = (user.role === 'admin') ? `<button onclick="deletePost('${doc.id}')" style="float:left; color:red; background:none; border:none; cursor:pointer;">حذف 🗑️</button>` : '';
                 post.innerHTML = `
                     <div class="user-info">
-                        <img src="https://ui-avatars.com/api/?name=${data.userHandle}&background=00f2ea&color=000" alt="avatar">
+                        <img src="https://ui-avatars.com/api/?name=${data.userHandle}&background=00f2ea&color=000">
                         <small>@${data.userHandle} • ${data.userName}</small>
+                        ${deleteUI}
                     </div>
                     <p>${data.desc}</p>
                     <video controls poster="${data.imgUrl}" src="${data.vidUrl}"></video>
-                    <button class="btn-unlock" onclick="unlockContent(this, '${data.imgUrl}')">فتح المحتوى الحصري (إعلان 5ث)</button>
+                    <button class="btn-unlock" onclick="unlockContent(this, '${data.imgUrl}')">فتح المحتوى الحصري</button>
                     <img class="hidden-img" src="${data.imgUrl}">
                 `;
                 feed.appendChild(post);
             });
         });
 
-        function unlockContent(btn, img) {
-            showAd("جاري فك التشفير عن الصورة...", 5, () => {
-                btn.style.display = 'none';
-                btn.nextElementSibling.style.display = 'block';
-            });
-        }
+        async function deletePost(id) { if(confirm("حذف نهائي؟")) await db.collection('all_posts').doc(id).delete(); }
 
-        // 5. النشر (الخطة الخفيفة)
+        function unlockContent(btn, img) { showAd("فك تشفير الملفات...", 5, () => { btn.style.display = 'none'; btn.nextElementSibling.style.display = 'block'; }); }
+
         async function submitPost() {
             const desc = document.getElementById('pDesc').value;
-            const vid = document.getElementById('pVidUrl').value;
-            const img = document.getElementById('pImgUrl').value;
+            const vidFile = document.getElementById('pVid').files[0];
+            const imgFile = document.getElementById('pImg').files[0];
             const user = JSON.parse(localStorage.getItem('safawy_user'));
 
-            if(!desc || !vid) return alert("الوصف والرابط مطلوبان!");
+            if(!desc || !vidFile || !imgFile) return alert("يرجى اختيار الوصف والفيديو والصورة!");
+
+            const btn = document.getElementById('uploadBtn');
+            btn.innerText = "جاري الضغط والنشر... يرجى الانتظار";
+            btn.disabled = true;
+
+            const toBase64 = file => new Promise((res) => {
+                const r = new FileReader(); r.readAsDataURL(file); r.onload = () => res(r.result);
+            });
+
+            const vidBase64 = await toBase64(vidFile);
+            const imgBase64 = await toBase64(imgFile);
 
             await db.collection('all_posts').add({
-                desc: desc, vidUrl: vid, imgUrl: img,
+                desc, vidUrl: vidBase64, imgUrl: imgBase64,
                 userName: user.name, userHandle: user.handle,
                 time: firebase.firestore.FieldValue.serverTimestamp()
             });
-            alert("تم النشر بنجاح!");
-            closeModals();
+            
+            location.reload();
         }
 
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
