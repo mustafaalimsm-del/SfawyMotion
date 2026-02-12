@@ -132,7 +132,15 @@
     </div>
     
 
-    <script>
+    <script>  // هذا الكود يتذكر حسابك تلقائياً عند فتح الموقع
+window.onload = function() {
+    const savedUser = localStorage.getItem('safawy_user');
+    if (savedUser) {
+        document.getElementById('btnRegister').style.display = 'none';
+        document.getElementById('btnPublish').style.display = 'block';
+    }
+};
+        
         function openLogin() { document.getElementById('loginModal').style.display = 'flex'; }
         function openPublish() { document.getElementById('publishModal').style.display = 'flex'; }
         function closeModals() { document.querySelectorAll('.modal').forEach(m => m.style.display='none'); }
