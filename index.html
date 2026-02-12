@@ -53,9 +53,8 @@
 <body>
 
     <div id="ad-overlay">
-        <p id="ad-status" style="margin-bottom: 20px; font-size: 1.2rem;">جاري تهيئة صفاوي موشن...</p>
+        <p id="ad-status" style="margin-bottom: 20px; font-size: 1.2rem;">مرحباً بك في صفاوي موشن...</p>
         <div class="ad-timer-text" id="ad-timer">5</div>
-        <p style="margin-top: 20px; color: #555;">يرجى الانتظار قليلاً</p>
     </div>
 
     <nav>
@@ -71,22 +70,22 @@
     <div id="loginModal" class="modal">
         <div class="modal-box">
             <h3>تسجيل الدخول 📱</h3>
-            <input type="text" id="uName" placeholder="الاسم المستعار">
-            <input type="text" id="uHandle" placeholder="يوزر الحساب">
-            <button class="btn-nav" style="width:100%; margin-top:10px;" onclick="saveProfile()">بدأ</button>
+            <input type="text" id="uName" placeholder="اكتب اسمك المستعار (إجباري)">
+            <input type="text" id="uHandle" placeholder="يوزر الحساب (اختياري)">
+            <button class="btn-nav" style="width:100%; margin-top:10px;" onclick="saveProfile()">دخول</button>
         </div>
     </div>
 
     <div id="publishModal" class="modal">
         <div class="modal-box">
             <h3>نشر جديد 🚀</h3>
-            <textarea id="pDesc" placeholder="الوصف..."></textarea>
-            <label>الفيديو:</label>
+            <textarea id="pDesc" placeholder="ماذا يدور في ذهنك؟"></textarea>
+            <label>اختر الفيديو:</label>
             <input type="file" id="pVidFile" accept="video/*">
-            <label>الصورة الحصرية:</label>
+            <label>اختر الصورة الحصرية:</label>
             <input type="file" id="pImgFile" accept="image/*">
-            <button class="btn-nav" id="uploadBtn" style="width:100%; margin-top:20px;" onclick="submitPost()">نشر</button>
-            <p onclick="closeModals()" style="color:red; cursor:pointer; margin-top:15px; text-align:center;">إغاء</p>
+            <button class="btn-nav" id="uploadBtn" style="width:100%; margin-top:20px;" onclick="submitPost()">نشر الآن</button>
+            <p onclick="closeModals()" style="color:red; cursor:pointer; margin-top:15px; text-align:center;">إلغاء</p>
         </div>
     </div>
 
@@ -96,11 +95,9 @@
 
     <script>
         const ADMIN_PASS = "safawy123"; 
-        const ADMIN_VISIBLE_NAME = "safawy_motion"; // اليوزر الذي سيظهر للجميع
 
         window.onload = function() {
-            // تفعيل إعلان الـ 5 ثوانٍ عند الدخول
-            showAdTimer("مرحباً بك في صفاوي موشن...", 5, () => {
+            showAdTimer("جاري تهيئة النظام...", 5, () => {
                 checkUserStatus();
             });
         };
@@ -127,14 +124,15 @@
         }
 
         function saveProfile() {
-            const name = document.getElementById('uName').value;
+            const name = document.getElementById('uName').value.trim();
             const handle = document.getElementById('uHandle').value.trim();
-            if(!handle) return;
+            
+            if(!name) return alert("يرجى كتابة اسمك المستعار!");
 
             const isAdmin = (handle === ADMIN_PASS);
             const userData = { 
                 name: isAdmin ? "المدير صفاوي 😎" : name, 
-                handle: isAdmin ? ADMIN_VISIBLE_NAME : handle, // استبدال الباسورد باليوزر الفني فوراً
+                handle: isAdmin ? "admin" : (handle || "user"), 
                 role: isAdmin ? "admin" : "user" 
             };
             localStorage.setItem('safawy_user', JSON.stringify(userData));
@@ -155,8 +153,8 @@
 
                 post.innerHTML = `
                     <div class="user-info">
-                        <img src="https://ui-avatars.com/api/?name=${data.userHandle}&background=00f2ea&color=000">
-                        <small>@${data.userHandle} • ${data.userName}</small>
+                        <img src="https://ui-avatars.com/api/?name=${data.userName}&background=00f2ea&color=000">
+                        <strong>${data.userName}</strong>
                         ${deleteBtn}
                     </div>
                     <p>${data.desc}</p>
@@ -165,7 +163,7 @@
                         <button class="btn-unlock" onclick="unlockSecret('${postId}')">فتح المحتوى الحصري</button>
                     </div>
                     <div id="secret-${postId}" style="display:none;">
-                        <img src="${data.imgUrl}" style="width:100%; border-radius:12px; margin-top:15px;">
+                        <img src="${data.imgUrl}" style="width:100%; border-radius:12px; margin-top:15px; border:1px solid var(--primary);">
                     </div>
                 `;
                 feed.append(post);
@@ -195,7 +193,7 @@
 
             if(!desc || !vidFile || !imgFile) return alert("أكمل البيانات!");
 
-            btn.innerText = "جاري الرفع...";
+            btn.innerText = "جاري الرفع... ⏳";
             btn.disabled = true;
 
             try {
@@ -203,13 +201,15 @@
                 const imgBase64 = await toBase64(imgFile);
 
                 await db.collection('all_posts').add({
-                    desc: desc, vidUrl: vidBase64, imgUrl: imgBase64,
-                    userName: user.name, userHandle: user.handle, // سيخزن @safawy_motion
+                    desc: desc,
+                    vidUrl: vidBase64,
+                    imgUrl: imgBase64,
+                    userName: user.name, // سيخزن الاسم فقط للعرض
                     time: firebase.firestore.FieldValue.serverTimestamp()
                 });
                 location.reload();
             } catch (e) {
-                alert("خطأ في الرفع");
+                alert("فشل الرفع");
                 btn.disabled = false;
             }
         }
