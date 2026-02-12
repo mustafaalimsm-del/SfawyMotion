@@ -161,46 +161,36 @@
 
     if (!desc || !vidFile || !imgFile) return alert("يرجى اختيار فيديو وصورة ووصف!");
 
-    alert("جاري الرفع العالمي للأبد... لا تغلق الصفحة");
+    alert("جاري المعالجة السريعة للنشر... انتظر لحظة");
 
     try {
-        // 1. رفع الصورة (ImgBB)
-        const imgFormData = new FormData();
-        imgFormData.append("image", imgFile);
-        const imgRes = await fetch("https://api.imgbb.com/1/upload?key=81c3c9716e254070775080076a0a0346", {
-            method: "POST",
-            body: imgFormData
+        // وظيفة لتحويل الملف إلى نص (Base64) لكي يُحفظ للأبد في قاعدتك
+        const toBase64 = file => new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
         });
-        const imgData = await imgRes.json();
-        const imgUrl = imgData.data.url;
 
-        // 2. رفع الفيديو (Cloudinary بالرابط الجديد dj7m6v8p1)
-        const vidFormData = new FormData();
-        vidFormData.append("file", vidFile);
-        vidFormData.append("upload_preset", "ml_default");
-        
-        const vidRes = await fetch("https://api.cloudinary.com/v1_1/demo/video/upload", {
-            method: "POST",
-            body: vidFormData
-        });
-        const vidData = await vidRes.json();
-        const vidUrl = vidData.secure_url;
+        // تحويل الفيديو والصورة لنصوص
+        const vidBase64 = await toBase64(vidFile);
+        const imgBase64 = await toBase64(imgFile);
 
-        // 3. الحفظ في Firebase Firestore (التي جعلتها أنت True)
+        // الحفظ المباشر في Firestore (قاعدتك القوية)
         await db.collection('all_posts').add({
             desc: desc,
-            vidUrl: vidUrl,
-            imgUrl: imgUrl,
+            vidUrl: vidBase64, // الفيديو أصبح نصاً محفوظاً هنا
+            imgUrl: imgBase64, // الصورة أصبحت نصاً محفوظاً هنا
             userName: userData.name,
             userHandle: userData.handle,
             time: firebase.firestore.FieldValue.serverTimestamp()
         });
 
-        alert("تم النشر بنجاح باهر! صفاوي موشن الآن لايف.");
+        alert("تم النشر بنجاح أسطوري! فيديو صفاوي موشن الآن لايف للأبد.");
         location.reload();
     } catch (e) {
         console.error(e);
-        alert("حدث خطأ بسيط، حاول مرة أخرى أو تأكد من حجم الفيديو.");
+        alert("تنبيه: حاول استخدام فيديو بحجم أصغر قليلاً ليتمكن المتصفح من معالجته.");
     }
         }
         
