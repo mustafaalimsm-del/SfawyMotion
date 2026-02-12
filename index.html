@@ -153,23 +153,37 @@
             alert("أهلاً بك يا ناشر! يمكنك الآن إضافة محتواك.");
         }
 
-        // نظام النشر المشروط
-        function submitPost() {
-            const desc = document.getElementById('pDesc').value;
-            const vidFile = document.getElementById('pVid').files[0];
-            const imgFile = document.getElementById('pImg').files[0];
+        async function submitPost() {
+    const desc = document.getElementById('pDesc').value;
+    const vidFile = document.getElementById('pVid').files[0];
+    const imgFile = document.getElementById('pImg').files[0];
+    const userData = JSON.parse(localStorage.getItem('safawy_user')) || {name: "مبدع صفاوي", handle: "user"};
 
-            // شرط صفاوي: يجب وجود الوصف والفيديو والصورة
-            if (!desc || !vidFile || !imgFile) {
-                alert("خطأ: لا يمكنك النشر إلا بعد إضافة وصف وفيديو وصورة!");
-                return;
-            }
+    if (!desc || !vidFile || !imgFile) return alert("يرجى اختيار فيديو وصورة ووصف!");
 
-            const vidUrl = URL.createObjectURL(vidFile);
-            const imgUrl = URL.createObjectURL(imgFile);
+    alert("جاري النشر العالمي للأبد... انتظر قليلاً");
 
-            addPostToFeed(desc, vidUrl, imgUrl);
-            closeModals();
+    try {
+        const vidRef = storage.ref('vids/' + Date.now() + "_" + vidFile.name);
+        await vidRef.put(vidFile);
+        const vidUrl = await vidRef.getDownloadURL();
+
+        const imgRef = storage.ref('imgs/' + Date.now() + "_" + imgFile.name);
+        await imgRef.put(imgFile);
+        const imgUrl = await imgRef.getDownloadURL();
+
+        await db.collection('all_posts').add({
+            desc, vidUrl, imgUrl, 
+            userName: userData.name, 
+            userHandle: userData.handle,
+            time: firebase.firestore.FieldValue.serverTimestamp()
+        });
+
+        alert("تم النشر بنجاح! حسابك ومنشورك محفوظان الآن");
+        location.reload();
+    } catch (e) { alert("خطأ: تأكد من إعدادات Rules في Firebase"); }
+        }
+        
             
             // تنظيف الحقول بعد النشر
             document.getElementById('pDesc').value = "";
@@ -189,7 +203,17 @@
             `;
             feed.prepend(post);
         }
-
+// كود جلب المنشورات من Firebase وعرضها لكل العالم
+db.collection('all_posts').orderBy('time', 'desc').onSnapshot(snapshot => {
+    const feed = document.getElementById('feed');
+    feed.innerHTML = ''; // تنظيف القائمة لعرض الجديد
+    snapshot.forEach(doc => {
+        const data = doc.data();
+        // استخدام القالب المظلل لعرض البيانات الحقيقية
+        addPostToFeed(data.desc, data.vidUrl, data.imgUrl);
+    });
+});
+        
         function startAd(btn, imgSrc) {
             const overlay = document.getElementById('ad-overlay');
             const timer = document.getElementById('ad-timer');
