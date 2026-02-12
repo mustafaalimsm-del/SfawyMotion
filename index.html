@@ -1,297 +1,198 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4660461160504958"
-     crossorigin="anonymous"></script>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4660461160504958" crossorigin="anonymous"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sfawy Motion | صفاوي موشن</title>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
-
-<script>
-  // كود الربط الخاص بمشروعك (sfawy-e4f39)
-  const firebaseConfig = {
-    apiKey: "AIzaSyCpLDn2CMWObwSHCjWqh6s6TWLyPraXicI",
-    authDomain: "sfawy-e4f39.firebaseapp.com",
-    projectId: "sfawy-e4f39",
-    storageBucket: "sfawy-e4f39.firebasestorage.app",
-    messagingSenderId: "395891884699",
-    appId: "1:395891884699:web:bb324267db21bdfba8fc3e"
-  };
-  
-  // تشغيل Firebase في موقعك
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
-  const storage = firebase.storage();
-</script>
-
-<script src="https://accounts.google.com/gsi/client" async defer></script>
     
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyCpLDn2CMWObwSHCjWqh6s6TWLyPraXicI",
+        authDomain: "sfawy-e4f39.firebaseapp.com",
+        projectId: "sfawy-e4f39",
+        storageBucket: "sfawy-e4f39.firebasestorage.app",
+        messagingSenderId: "395891884699",
+        appId: "1:395891884699:web:bb324267db21bdfba8fc3e"
+      };
+      firebase.initializeApp(firebaseConfig);
+      const db = firebase.firestore();
+    </script>
+
     <style>
         :root { --primary: #00f2ea; --secondary: #ff0050; --dark: #050505; --glass: rgba(255, 255, 255, 0.05); }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background-color: var(--dark); color: white; display: flex; flex-direction: column; min-height: 100vh; }
+        body { background-color: var(--dark); color: white; display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; }
 
-        /* الهيدر */
         nav { padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.9); border-bottom: 1px solid #222; position: sticky; top: 0; z-index: 100; }
-        .logo { font-size: 1.4rem; font-weight: 900; }
+        .logo { font-size: 1.4rem; font-weight: 900; color: white; text-decoration: none; }
         .logo span { color: var(--primary); }
         .btn-nav { background: var(--primary); color: black; padding: 8px 15px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; }
 
-        /* المحتوى */
         .main-content { flex: 1; padding: 20px; max-width: 600px; margin: 0 auto; width: 100%; }
-        .post-card { background: var(--glass); border-radius: 20px; border: 1px solid #222; margin-bottom: 25px; padding: 20px; overflow: hidden; position: relative; }
+        .post-card { background: var(--glass); border-radius: 20px; border: 1px solid #222; margin-bottom: 25px; padding: 20px; position: relative; }
+        .user-info { display: flex; align-items: center; margin-bottom: 10px; }
+        .user-info img { width: 30px; height: 30px; border-radius: 50%; margin-left: 10px; border: 1px solid var(--primary); }
         video { width: 100%; border-radius: 12px; background: #000; margin-top: 10px; }
-        .btn-unlock { background: linear-gradient(45deg, #6a11cb, #2575fc); color: white; width: 100%; padding: 12px; border-radius: 10px; border: none; cursor: pointer; margin-top: 15px; font-weight: bold; }
+        
+        .btn-unlock { background: linear-gradient(45deg, var(--secondary), #ff4d8d); color: white; width: 100%; padding: 12px; border-radius: 10px; border: none; cursor: pointer; margin-top: 15px; font-weight: bold; }
         .hidden-img { width: 100%; border-radius: 12px; margin-top: 15px; display: none; border: 2px solid var(--primary); }
 
-        /* النوافذ */
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: none; justify-content: center; align-items: center; z-index: 2000; }
-        .modal-box { background: #1a1a1a; padding: 25px; border-radius: 20px; width: 90%; max-width: 450px; text-align: center; border: 1px solid #333; }
-        input, textarea { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #333; border-radius: 8px; background: #000; color: white; }
-        label { display: block; text-align: right; margin-top: 10px; font-size: 0.8rem; color: var(--primary); }
+        .modal-box { background: #1a1a1a; padding: 25px; border-radius: 20px; width: 90%; max-width: 450px; border: 1px solid #333; }
+        input, textarea { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #333; border-radius: 8px; background: #000; color: white; text-align: right; }
 
-        /* الفوتر */
-        footer { padding: 40px; text-align: center; border-top: 1px solid #222; background: #000; margin-top: auto; }
-        .tiktok-link { color: var(--primary); text-decoration: none; font-weight: bold; font-size: 1.1rem; display: inline-block; margin-top: 15px; padding: 8px 20px; border: 2px solid var(--primary); border-radius: 15px; transition: 0.3s; }
-        .tiktok-link:hover { background: var(--primary); color: black; }
-        
-        #ad-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 3000; display: none; flex-direction: column; align-items: center; justify-content: center; }
+        #ad-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 5000; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+        .ad-timer-text { font-size: 4rem; color: var(--primary); font-weight: bold; }
     </style>
 </head>
 <body>
 
+    <div id="ad-overlay">
+        <p id="ad-status" style="margin-bottom: 20px;">جاري تجهيز المحتوى الحصري...</p>
+        <div class="ad-timer-text" id="ad-timer">5</div>
+        <div style="margin-top: 20px; width: 300px; height: 250px; background: #222;">
+            <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4660461160504958" data-ad-slot="1234567890" data-ad-format="auto" data-full-width-responsive="true"></ins>
+            <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+        </div>
+    </div>
+
     <nav>
-        <div class="logo">صفاوي <span>موشن</span></div>
+        <a href="#" class="logo">صفاوي <span>موشن</span></a>
         <div id="auth-zone">
-            <button class="btn-nav" id="btnRegister" onclick="openLogin()">سجل للنشر</button>
-            <button class="btn-nav" id="btnPublish" style="display:none; background:white;" onclick="openPublish()">+ انشر الآن</button>
+            <button class="btn-nav" id="btnRegister" onclick="openModal('loginModal')">سجل بتيك توك</button>
+            <button class="btn-nav" id="btnPublish" style="display:none; background:white;" onclick="openModal('publishModal')">+ انشر الآن</button>
         </div>
     </nav>
 
     <div class="main-content" id="feed">
-        </div>
-
-    <footer>
-        <p style="color: #888; font-size: 0.9rem;">جميع الحقوق محفوظة لـ صفاوي موشن Sfawy Motion</p>
-        <p style="color: #888; font-size: 0.9rem;">© 2026</p>
-        <a href="https://www.tiktok.com/@v3_rc" target="_blank" class="tiktok-link">TikTok: @v3_rc</a>
-    </footer>
+        <p style="text-align: center; color: #888;">جاري جلب الفيديوهات...</p>
+    </div>
 
     <div id="loginModal" class="modal">
         <div class="modal-box">
-            <h3>تسجيل ناشر جديد</h3>
-            <div id="g_id_onload" data-client_id="582879667780-v4mk078evkhsuo38v9e0vr8oo7vt0hes.apps.googleusercontent.com" data-callback="onGoogleSign"></div>
-            <div class="g_id_signin" data-type="standard" style="margin: 20px 0;"></div>
-            
-            <div id="profileSetup" style="display:none;">
-                <input type="text" id="uName" placeholder="الاسم (مثلاً: المبدع صفاوي)">
-                <input type="text" id="uHandle" placeholder="يوزر فريد (مثلاً: @safawy_motion)">
-                <button class="btn-nav" style="width:100%" onclick="saveProfile()">إتمام التسجيل</button>
-            </div>
-            <p style="color:red; cursor:pointer; margin-top:10px;" onclick="closeModals()">إغلاق</p>
+            <h3 style="margin-bottom:15px;">ربط حساب تيك توك 📱</h3>
+            <input type="text" id="uName" placeholder="اسمك المستعار">
+            <input type="text" id="uHandle" placeholder="يوزر تيك توك (بدون @)">
+            <button class="btn-nav" style="width:100%; margin-top:10px;" onclick="saveProfile()">ابدأ النشر الآن</button>
+            <p onclick="closeModals()" style="color:red; cursor:pointer; margin-top:15px; text-align:center;">إلغاء</p>
         </div>
     </div>
 
-</div>
-
-    <div id="ad-overlay">
-    <h1 id="ad-timer" style="font-size: 5rem; color: var(--secondary); z-index: 3001;">5</h1>
-    
-    <div id="adsense-unit" style="width: 100%; max-width: 300px; margin: 10px auto;">
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-460461160504958"
-             crossorigin="anonymous"></script>
-        <ins class="adsbygoogle"
-             style="display:block"
-             data-ad-client="ca-pub-460461160504958"
-             data-ad-slot="رقم_الوحدة_الخاص_بك"
-             data-ad-format="auto"
-             data-full-width-responsive="true"></ins>
-        <script>
-             (adsbygoogle = window.adsbygoogle || []).push({});
-        </script>
+    <div id="publishModal" class="modal">
+        <div class="modal-box">
+            <h3>انشر محتوى جديد 🚀</h3>
+            <textarea id="pDesc" placeholder="وصف الفيديو..."></textarea>
+            <input type="text" id="pVidUrl" placeholder="رابط فيديو تيك توك">
+            <input type="text" id="pImgUrl" placeholder="رابط الصورة الحصرية">
+            <button class="btn-nav" style="width:100%" onclick="submitPost()">نشر عالمي</button>
+            <p onclick="closeModals()" style="color:red; cursor:pointer; margin-top:15px; text-align:center;">إلغاء</p>
+        </div>
     </div>
-    </div>
-    
 
-    <script>  // هذا الكود يتذكر حسابك تلقائياً عند فتح الموقع
-window.onload = function() {
-    const savedU<div id="publishModal" class="modal">
-    <div class="modal-box">
-        <h3>نشر فيديو جديد</h3>
-        <textarea id="pDesc" placeholder="اكتب وصفاً للمنشور..."></textarea>
-        
-        <label>رابط الفيديو (من تيك توك أو مباشر):</label>
-        <input type="text" id="pVidUrl" placeholder="الصق الرابط هنا...">
-        
-        <label>رابط صورة الغلاف:</label>
-        <input type="text" id="pImgUrl" placeholder="رابط صورة لتظهر قبل التشغيل">
+    <script>
+        // 1. تذكر الحساب وإعلان الدخول
+        window.onload = function() {
+            showAd("مرحباً بك في صفاوي موشن...", 5); // إعلان الدخول
+            const savedUser = localStorage.getItem('safawy_user');
+            if (savedUser) {
+                document.getElementById('btnRegister').style.display = 'none';
+                document.getElementById('btnPublish').style.display = 'block';
+            }
+        };
 
-        <button class="btn-nav" onclick="submitPost()">انشر عبر تيك توك 🚀</button>
-        <p onclick="closeModals()" style="color:red; cursor:pointer;">إلغاء</p>
-    </div>
-</div>
-    ser = localStorage.getItem('safawy_user');
-    if (savedUser) {
-        document.getElementById('btnRegister').style.display = 'none';
-        document.getElementById('btnPublish').style.display = 'block';
-    }
-};
-        
-        function openLogin() { document.getElementById('loginModal').style.display = 'flex'; }
-        function openPublish() { document.getElementById('publishModal').style.display = 'flex'; }
-        function closeModals() { document.querySelectorAll('.modal').forEach(m => m.style.display='none'); }
-
-        function onGoogleSign(response) {
-            document.querySelector(".g_id_signin").style.display = 'none';
-            document.getElementById('profileSetup').style.display = 'block';
-        }
-
-function saveProfile() {
-    const tiktokUser = document.getElementById('uHandle').value.replace('@', ''); // نأخذ اليوزر بدون @
-    const name = document.getElementById('uName').value;
-
-    if (!tiktokUser || !name) return alert("يرجى إدخال اسمك ويوزر تيك توك!");
-
-    // نجهز بيانات تيك توك
-    const userData = {
-        name: name,
-        handle: tiktokUser,
-        profileLink: `https://www.tiktok.com/@${tiktokUser}`,
-        avatar: `https://www.tiktok.com/embed/@${tiktokUser}` // محاولة جلب الصورة (تجريبي)
-    };
-
-    // حفظ البيانات في ذاكرة المتصفح للأبد
-    localStorage.setItem('safawy_user', JSON.stringify(userData));
-
-    document.getElementById('btnRegister').style.display = 'none';
-    document.getElementById('btnPublish').style.display = 'block';
-    closeModals();
-    alert(`أهلاً بك يا بطل تيك توك! تم ربط حسابك @${tiktokUser} بنجاح.`);
-}
-        
-        
-
-      
-        async function submitPost() {
-    const desc = document.getElementById('pDesc').value;
-    const vidUrl = document.getElementById('pVidUrl').value;
-    const imgUrl = document.getElementById('pImgUrl').value;
-    
-    // جلب بيانات تيك توك من ذاكرة المتصفح
-    const userData = JSON.parse(localStorage.getItem('safawy_user')) || {name: "مبدع صفاوي", handle: "user"};
-
-    if (!desc || !vidUrl) return alert("يرجى وضع الوصف ورابط الفيديو!");
-
-    try {
-        // حفظ الرابط فقط (خفيف جداً على السيرفر)
-        await db.collection('all_posts').add({
-            desc: desc,
-            vidUrl: vidUrl,
-            imgUrl: imgUrl || 'https://via.placeholder.com/300', 
-            userName: userData.name,
-            userHandle: userData.handle, 
-            time: firebase.firestore.FieldValue.serverTimestamp()
-        });
-
-        alert("تم النشر بنجاح! سيظهر الفيديو الآن للجميع.");
-        location.reload();
-    } catch (e) {
-        alert("حدث خطأ، تأكد من الاتصال بالإنترنت.");
-    }
-        }
-        
-        
-        
-
-        function addPostToFeed(desc, vid, img) {
-            const feed = document.getElementById('feed');
-            const post = document.createElement('div');
-            post.className = 'post-card';
-            post.innerHTML = `
-                <p style="font-weight:bold;">${desc}</p>
-                <video controls src="${vid}"></video>
-                <button class="btn-unlock" onclick="startAd(this, '${img}')">احصل عليه (إعلان 5ث)</button>
-                <img class="hidden-img" src="${img}">
-            `;
-            feed.prepend(post);
-        }
-// كود جلب المنشورات من Firebase وعرضها لكل العالم
-db.collection('all_posts').orderBy('time', 'desc').onSnapshot(snapshot => {
-    const feed = document.getElementById('feed');
-    feed.innerHTML = ''; // تنظيف القائمة لعرض الجديد
-    snapshot.forEach(doc => {
-        const data = doc.data();
-        // استخدام القالب المظلل لعرض البيانات الحقيقية
-        addPostToFeed(data.desc, data.vidUrl, data.imgUrl);
-    });
-});
-        
-        function startAd(btn, imgSrc) {
+        // 2. نظام الإعلانات المطور
+        function showAd(msg, seconds, callback) {
             const overlay = document.getElementById('ad-overlay');
             const timer = document.getElementById('ad-timer');
-            overlay.style.display = 'flex';
-            let count = 5;
-            timer.innerText = count;
+            const status = document.getElementById('ad-status');
             
-            let cd = setInterval(() => {
+            status.innerText = msg;
+            overlay.style.display = 'flex';
+            let count = seconds;
+            timer.innerText = count;
+
+            let interval = setInterval(() => {
                 count--;
                 timer.innerText = count;
                 if(count <= 0) {
-                    clearInterval(cd);
+                    clearInterval(interval);
                     overlay.style.display = 'none';
-                    btn.style.display = 'none';
-                    const img = btn.nextElementSibling;
-                    img.style.display = 'block';
+                    if(callback) callback();
                 }
             }, 1000);
         }
-        // تشغيل "تحميل وهمي" كل دقيقتين لزيادة الأرباح
-setInterval(() => {
-    showLoadingAd();
-}, 120000); // دقيقتان
 
-function showLoadingAd() {
-    const overlay = document.getElementById('ad-overlay');
-    const timer = document.getElementById('ad-timer');
-    const adText = document.querySelector('#ad-overlay p');
-    
-    // تغيير النص ليظهر كأنه تحميل فني
-    adText.innerHTML = "جاري معالجة وتحديث جودة الفيديو... <br> <span style='color:#888; font-size:0.8rem;'>يرجى عدم إغلاق الصفحة</span>";
-    
-    overlay.style.display = 'flex';
-    let count = 5;
-    timer.innerText = count;
-    
-    let cd = setInterval(() => {
-        count--;
-        timer.innerText = count;
-        
-        if(count <= 0) {
-            clearInterval(cd);
-            overlay.style.display = 'none';
+        // إعلان صوري كل دقيقة لزيادة الأرباح
+        setInterval(() => {
+            if(document.getElementById('ad-overlay').style.display !== 'flex') {
+                showAd("جاري تحديث السيرفرات لضمان السرعة...", 3);
+            }
+        }, 60000);
 
-            window.open('رابط_الإعلان_الخاص_بك', '_blank');
+        // 3. التسجيل والحفظ (فكرة تيك توك)
+        function saveProfile() {
+            const name = document.getElementById('uName').value;
+            const handle = document.getElementById('uHandle').value.replace('@', '');
+            if(!name || !handle) return alert("املأ بياناتك يا بطل!");
+
+            const userData = { name: name, handle: handle };
+            localStorage.setItem('safawy_user', JSON.stringify(userData));
+            location.reload();
         }
-    }, 1000);
-}
 
-        
+        // 4. جلب وعرض المنشورات
+        db.collection('all_posts').orderBy('time', 'desc').onSnapshot(snapshot => {
+            const feed = document.getElementById('feed');
+            feed.innerHTML = '';
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                const post = document.createElement('div');
+                post.className = 'post-card';
+                post.innerHTML = `
+                    <div class="user-info">
+                        <img src="https://ui-avatars.com/api/?name=${data.userHandle}&background=00f2ea&color=000" alt="avatar">
+                        <small>@${data.userHandle} • ${data.userName}</small>
+                    </div>
+                    <p>${data.desc}</p>
+                    <video controls poster="${data.imgUrl}" src="${data.vidUrl}"></video>
+                    <button class="btn-unlock" onclick="unlockContent(this, '${data.imgUrl}')">فتح المحتوى الحصري (إعلان 5ث)</button>
+                    <img class="hidden-img" src="${data.imgUrl}">
+                `;
+                feed.appendChild(post);
+            });
+        });
+
+        function unlockContent(btn, img) {
+            showAd("جاري فك التشفير عن الصورة...", 5, () => {
+                btn.style.display = 'none';
+                btn.nextElementSibling.style.display = 'block';
+            });
+        }
+
+        // 5. النشر (الخطة الخفيفة)
+        async function submitPost() {
+            const desc = document.getElementById('pDesc').value;
+            const vid = document.getElementById('pVidUrl').value;
+            const img = document.getElementById('pImgUrl').value;
+            const user = JSON.parse(localStorage.getItem('safawy_user'));
+
+            if(!desc || !vid) return alert("الوصف والرابط مطلوبان!");
+
+            await db.collection('all_posts').add({
+                desc: desc, vidUrl: vid, imgUrl: img,
+                userName: user.name, userHandle: user.handle,
+                time: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            alert("تم النشر بنجاح!");
+            closeModals();
+        }
+
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModals() { document.querySelectorAll('.modal').forEach(m => m.style.display='none'); }
     </script>
-    <section id="privacy" style="padding: 40px 5%; background: #1a1a1a; margin-top: 50px; border-top: 1px solid #333; font-size: 0.9rem; color: #ccc; line-height: 1.6;">
-    <h2 style="color: var(--primary); margin-bottom: 20px;">سياسة الخصوصية (Privacy Policy)</h2>
-    <p>في <strong>صفاوي موشن</strong>، نلتزم بحماية خصوصية زوارنا. توضح هذه الوثيقة أنواع المعلومات التي نجمعها وكيفية استخدامها.</p>
-    
-    <h3 style="color: #fff; margin-top: 15px;">ملفات تعريف الارتباط (Cookies)</h3>
-    <p>نحن نستخدم ملفات تعريف الارتباط لتخزين تفضيلات الزوار وتحسين تجربة المستخدم. كما نستخدم طرفاً ثالثاً مثل <strong>Google AdSense</strong> لعرض الإعلانات عند زيارة موقعنا.</p>
-    
-    <h3 style="color: #fff; margin-top: 15px;">إعلانات جوجل (Google AdSense)</h3>
-    <p>تستخدم جوجل ملفات تعريف الارتباط لعرض الإعلانات بناءً على زياراتك السابقة لموقعنا أو مواقع أخرى على الإنترنت. يمكنك اختيار تعطيل الإعلانات المخصصة من خلال زيارة إعدادات إعلانات جوجل.</p>
-    
-    <p style="margin-top: 20px;">باستخدامك لموقعنا، فإنك توافق على سياسة الخصوصية الخاصة بنا.</p>
-    </section>
-    
 </body>
 </html>
