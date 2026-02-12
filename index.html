@@ -153,6 +153,7 @@
             alert("أهلاً بك يا ناشر! يمكنك الآن إضافة محتواك.");
         }
 
+        
         async function submitPost() {
     const desc = document.getElementById('pDesc').value;
     const vidFile = document.getElementById('pVid').files[0];
@@ -161,10 +162,10 @@
 
     if (!desc || !vidFile || !imgFile) return alert("يرجى اختيار فيديو وصورة ووصف!");
 
-    alert("بدأ الرفع المجاني.. انتظر حتى يختفي هذا التنبيه");
+    alert("جاري الرفع العالمي للأبد... قد يستغرق الفيديو دقيقة، لا تغلق الصفحة!");
 
     try {
-        // رفع الصورة مجاناً عبر ImgBB
+        // 1. رفع الصورة بشكل دائم (ImgBB)
         const imgFormData = new FormData();
         imgFormData.append("image", imgFile);
         const imgRes = await fetch("https://api.imgbb.com/1/upload?key=81c3c9716e254070775080076a0a0346", {
@@ -174,23 +175,33 @@
         const imgData = await imgRes.json();
         const imgUrl = imgData.data.url;
 
-        // رفع الفيديو مجاناً (رابط مباشر)
-        // ملاحظة: لضمان السرعة سنستخدم الروابط المباشرة الآن
-        // ارفع الفيديو على موقع (video-host) وضع الرابط هنا أو استخدم الرفع المباشر إذا تفعلت البطاقة
+        // 2. رفع الفيديو بشكل دائم (Cloudinary - الرفع السحابي المجاني)
+        const vidFormData = new FormData();
+        vidFormData.append("file", vidFile);
+        vidFormData.append("upload_preset", "ml_default"); // إعداد افتراضي للرفع المجاني
         
+        const vidRes = await fetch("https://api.cloudinary.com/v1_1/demo/video/upload", {
+            method: "POST",
+            body: vidFormData
+        });
+        const vidData = await vidRes.json();
+        const vidUrl = vidData.secure_url;
+
+        // 3. حفظ الروابط الدائمة في قاعدة بياناتك (التي فعلتها أنت بنجاح)
         await db.collection('all_posts').add({
             desc: desc,
-            vidUrl: URL.createObjectURL(vidFile), // مؤقتاً للعرض عندك، وللنشر العالمي يفضل رابط دائم
+            vidUrl: vidUrl,
             imgUrl: imgUrl,
             userName: userData.name,
             userHandle: userData.handle,
             time: firebase.firestore.FieldValue.serverTimestamp()
         });
 
-        alert("مبروك! تم النشر بنجاح في صفاوي موشن.");
+        alert("تم النشر بنجاح باهر! منشورك الآن يراه العالم كله.");
         location.reload();
     } catch (e) {
-        alert("فشل الرفع: " + e.message);
+        console.error(e);
+        alert("حدث خطأ بسيط، حاول مرة أخرى أو تأكد من حجم الفيديو.");
     }
         }
         
