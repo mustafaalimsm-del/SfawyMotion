@@ -150,21 +150,29 @@ window.onload = function() {
             document.getElementById('profileSetup').style.display = 'block';
         }
 
-        function saveProfile() {
+function saveProfile() {
+    const tiktokUser = document.getElementById('uHandle').value.replace('@', ''); // نأخذ اليوزر بدون @
     const name = document.getElementById('uName').value;
-    const handle = document.getElementById('uHandle').value;
-    if (!name || !handle) return alert("يرجى كتابة الاسم واليوزر");
 
-    const userData = { name: name, handle: handle };
-    
-    // هذا هو السطر المفقود الذي يجعل المتصفح يتذكرك للأبد
+    if (!tiktokUser || !name) return alert("يرجى إدخال اسمك ويوزر تيك توك!");
+
+    // نجهز بيانات تيك توك
+    const userData = {
+        name: name,
+        handle: tiktokUser,
+        profileLink: `https://www.tiktok.com/@${tiktokUser}`,
+        avatar: `https://www.tiktok.com/embed/@${tiktokUser}` // محاولة جلب الصورة (تجريبي)
+    };
+
+    // حفظ البيانات في ذاكرة المتصفح للأبد
     localStorage.setItem('safawy_user', JSON.stringify(userData));
 
     document.getElementById('btnRegister').style.display = 'none';
     document.getElementById('btnPublish').style.display = 'block';
     closeModals();
-    alert("أهلاً بك يا ناشر! يمكنك الآن إضافة محتواك");
-        }
+    alert(`أهلاً بك يا بطل تيك توك! تم ربط حسابك @${tiktokUser} بنجاح.`);
+}
+        
         
 
       async function submitPost() {
