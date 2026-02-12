@@ -179,7 +179,7 @@
         vidFormData.append("file", vidFile);
         vidFormData.append("upload_preset", "ml_default");
         
-        const vidRes = await fetch("https://api.cloudinary.com/v1_1/dj7m6v8p1/video/upload", {
+        const vidRes = await fetch("https://api.cloudinary.com/v1_1/demo/video/upload", {
             method: "POST",
             body: vidFormData
         });
