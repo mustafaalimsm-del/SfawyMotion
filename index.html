@@ -34,7 +34,7 @@
         .tiktok-link { color: var(--primary); text-decoration: none; font-weight: bold; font-size: 1.1rem; display: inline-block; margin-top: 15px; padding: 8px 20px; border: 2px solid var(--primary); border-radius: 15px; transition: 0.3s; }
         .tiktok-link:hover { background: var(--primary); color: black; }
         
-        #ad-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 3000; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 20px; }
+        #ad-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 3000; display: none; flex-direction: column; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
@@ -47,7 +47,8 @@
         </div>
     </nav>
 
-    <div class="main-content" id="feed"></div>
+    <div class="main-content" id="feed">
+        </div>
 
     <footer>
         <p style="color: #888; font-size: 0.9rem;">جميع الحقوق محفوظة لـ صفاوي موشن Sfawy Motion</p>
@@ -74,25 +75,26 @@
         <div class="modal-box" style="text-align: right;">
             <h3>نشر فيديو جديد</h3>
             <p style="font-size: 0.7rem; color: #888;">* يجب إكمال جميع الحقول للنشر</p>
+            
             <textarea id="pDesc" placeholder="اكتب وصفاً للمنشور..."></textarea>
+            
             <label>اختر الفيديو:</label>
             <input type="file" id="pVid" accept="video/*">
+            
             <label>اختر الصورة الحصرية:</label>
             <input type="file" id="pImg" accept="image/*">
+            
             <button class="btn-nav" style="width:100%; margin-top:20px;" onclick="submitPost()">نشر في صفاوي موشن</button>
             <p style="text-align:center; margin-top:10px; color:red; cursor:pointer;" onclick="closeModals()">إلغاء</p>
         </div>
     </div>
 
     <div id="ad-overlay">
-        <h1 id="ad-timer" style="font-size: 5rem; color: var(--primary);">5</h1>
-        <p id="ad-status">جارٍ معالجة طلبك.. إعلان لدعم صفاوي موشن</p>
+        <h1 id="ad-timer" style="font-size: 5rem; color: var(--secondary);">5</h1>
+        <p>جارٍ معالجة طلبك.. إعلان لدعم صفاوي موشن</p>
     </div>
 
     <script>
-        // رابط الإعلان الحقيقي (استبدله برابط Adsterra الخاص بك لاحقاً)
-        const MY_AD_LINK = "https://www.google.com"; 
-
         function openLogin() { document.getElementById('loginModal').style.display = 'flex'; }
         function openPublish() { document.getElementById('publishModal').style.display = 'flex'; }
         function closeModals() { document.querySelectorAll('.modal').forEach(m => m.style.display='none'); }
@@ -106,21 +108,35 @@
             const name = document.getElementById('uName').value;
             const handle = document.getElementById('uHandle').value;
             if(!name || !handle) return alert("يرجى كتابة الاسم واليوزر");
+            
             document.getElementById('btnRegister').style.display = 'none';
             document.getElementById('btnPublish').style.display = 'block';
             closeModals();
-            alert("أهلاً بك يا ناشر!");
+            alert("أهلاً بك يا ناشر! يمكنك الآن إضافة محتواك.");
         }
 
+        // نظام النشر المشروط
         function submitPost() {
             const desc = document.getElementById('pDesc').value;
             const vidFile = document.getElementById('pVid').files[0];
             const imgFile = document.getElementById('pImg').files[0];
-            if (!desc || !vidFile || !imgFile) return alert("خطأ: أكمل جميع الحقول!");
+
+            // شرط صفاوي: يجب وجود الوصف والفيديو والصورة
+            if (!desc || !vidFile || !imgFile) {
+                alert("خطأ: لا يمكنك النشر إلا بعد إضافة وصف وفيديو وصورة!");
+                return;
+            }
+
             const vidUrl = URL.createObjectURL(vidFile);
             const imgUrl = URL.createObjectURL(imgFile);
+
             addPostToFeed(desc, vidUrl, imgUrl);
             closeModals();
+            
+            // تنظيف الحقول بعد النشر
+            document.getElementById('pDesc').value = "";
+            document.getElementById('pVid').value = "";
+            document.getElementById('pImg').value = "";
         }
 
         function addPostToFeed(desc, vid, img) {
@@ -130,37 +146,16 @@
             post.innerHTML = `
                 <p style="font-weight:bold;">${desc}</p>
                 <video controls src="${vid}"></video>
-                <button class="btn-unlock" onclick="startAd(this, '${img}')">مشاهدة الصورة الحصرية (إعلان)</button>
+                <button class="btn-unlock" onclick="startAd(this, '${img}')">احصل عليه (إعلان 5ث)</button>
                 <img class="hidden-img" src="${img}">
             `;
             feed.prepend(post);
         }
 
-        // إعلان عند الضغط على زر "احصل عليه"
         function startAd(btn, imgSrc) {
-            showAdScreen("جارٍ فتح الملف المطلوب...", () => {
-                btn.style.display = 'none';
-                btn.nextElementSibling.style.display = 'block';
-                window.open(MY_AD_LINK, '_blank');
-            });
-        }
-
-        // نظام التحميل الذكي (كل دقيقتين تلقائياً)
-        setInterval(() => {
-            showAdScreen("جاري معالجة وتحديث جودة الفيديوهات...", () => {
-                window.open(MY_AD_LINK, '_blank');
-            });
-        }, 120000);
-
-        // محرك تشغيل الإعلان
-        function showAdScreen(message, callback) {
             const overlay = document.getElementById('ad-overlay');
             const timer = document.getElementById('ad-timer');
-            const status = document.getElementById('ad-status');
-            
-            status.innerHTML = message + "<br><span style='color:#888; font-size:0.8rem;'>يرجى عدم إغلاق الصفحة لضمان الجودة</span>";
             overlay.style.display = 'flex';
-            
             let count = 5;
             timer.innerText = count;
             
@@ -170,10 +165,43 @@
                 if(count <= 0) {
                     clearInterval(cd);
                     overlay.style.display = 'none';
-                    if(callback) callback();
+                    btn.style.display = 'none';
+                    const img = btn.nextElementSibling;
+                    img.style.display = 'block';
                 }
             }, 1000);
         }
+        // تشغيل "تحميل وهمي" كل دقيقتين لزيادة الأرباح
+setInterval(() => {
+    showLoadingAd();
+}, 120000); // دقيقتان
+
+function showLoadingAd() {
+    const overlay = document.getElementById('ad-overlay');
+    const timer = document.getElementById('ad-timer');
+    const adText = document.querySelector('#ad-overlay p');
+    
+    // تغيير النص ليظهر كأنه تحميل فني
+    adText.innerHTML = "جاري معالجة وتحديث جودة الفيديو... <br> <span style='color:#888; font-size:0.8rem;'>يرجى عدم إغلاق الصفحة</span>";
+    
+    overlay.style.display = 'flex';
+    let count = 5;
+    timer.innerText = count;
+    
+    let cd = setInterval(() => {
+        count--;
+        timer.innerText = count;
+        
+        if(count <= 0) {
+            clearInterval(cd);
+            overlay.style.display = 'none';
+            
+            // هنا تضع رابط الإعلان الحقيقي الذي سيعطيك إياه موقع Adsterra أو غيره
+            // window.open('رابط_الإعلان_هنا', '_blank'); 
+        }
+    }, 1000);
+}
+        
     </script>
 </body>
 </html>
