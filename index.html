@@ -25,7 +25,7 @@
     <style>
         :root { --primary: #00f2ea; --secondary: #ff0050; --dark: #050505; --glass: rgba(255, 255, 255, 0.05); }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background-color: var(--dark); color: white; display: flex; flex-direction: column; min-height: 100vh; overflow-x: hidden; }
+        body { background-color: var(--dark); color: white; display: flex; flex-direction: column; min-height: 100vh; }
 
         nav { padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.9); border-bottom: 1px solid #222; position: sticky; top: 0; z-index: 100; }
         .logo { font-size: 1.4rem; font-weight: 900; color: white; text-decoration: none; }
@@ -39,11 +39,14 @@
         video { width: 100%; border-radius: 12px; background: #000; margin-top: 10px; }
         
         .btn-unlock { background: linear-gradient(45deg, var(--secondary), #ff4d8d); color: white; width: 100%; padding: 12px; border-radius: 10px; border: none; cursor: pointer; margin-top: 15px; font-weight: bold; }
-        .hidden-img { width: 100%; border-radius: 12px; margin-top: 15px; display: none; border: 2px solid var(--primary); }
+        
+        footer { padding: 30px; text-align: center; background: #000; border-top: 1px solid #222; font-size: 0.9rem; color: #888; }
+        .footer-links a { color: var(--primary); text-decoration: none; margin: 0 10px; }
 
         .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: none; justify-content: center; align-items: center; z-index: 2000; }
         .modal-box { background: #1a1a1a; padding: 25px; border-radius: 20px; width: 90%; max-width: 450px; border: 1px solid #333; }
         input, textarea { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #333; border-radius: 8px; background: #000; color: white; text-align: right; }
+        label { display: block; margin-top: 10px; font-size: 0.8rem; color: var(--primary); }
 
         #ad-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 5000; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
         .ad-timer-text { font-size: 4rem; color: var(--primary); font-weight: bold; }
@@ -52,11 +55,8 @@
 <body>
 
     <div id="ad-overlay">
-        <p id="ad-status" style="margin-bottom: 20px;">جاري التحقق من أمان الموقع...</p>
+        <p id="ad-status" style="margin-bottom: 20px;">جاري تجهيز المحتوى الحصري...</p>
         <div class="ad-timer-text" id="ad-timer">5</div>
-        <div style="margin-top: 20px; width: 300px; height: 250px; background: #222;">
-            <p style="color:#555; padding-top:100px;">إعلان مدعوم</p>
-        </div>
     </div>
 
     <nav>
@@ -73,8 +73,8 @@
         <div class="modal-box">
             <h3>ربط حساب تيك توك 📱</h3>
             <input type="text" id="uName" placeholder="اسمك المستعار">
-            <input type="text" id="uHandle" placeholder="يوزر تيك توك (الأدمن يضع الباسورد هنا)">
-            <button class="btn-nav" style="width:100%; margin-top:10px;" onclick="saveProfile()">دخول</button>
+            <input type="text" id="uHandle" placeholder="يوزر تيك توك">
+            <button class="btn-nav" style="width:100%; margin-top:10px;" onclick="saveProfile()">ابدأ الرحلة</button>
             <p onclick="closeModals()" style="color:red; cursor:pointer; margin-top:15px; text-align:center;">إلغاء</p>
         </div>
     </div>
@@ -82,29 +82,42 @@
     <div id="publishModal" class="modal">
         <div class="modal-box">
             <h3>انشر إبداعك 🚀</h3>
-            <textarea id="pDesc" placeholder="وصف الموشن..."></textarea>
-            <input type="text" id="pVidUrl" placeholder="رابط الفيديو الحصري">
-            <input type="text" id="pImgUrl" placeholder="رابط الصورة الحصرية (لن تظهر إلا بعد الإعلان)">
-            <button class="btn-nav" style="width:100%" onclick="submitPost()">نشر عالمي</button>
+            <textarea id="pDesc" placeholder="ماذا يدور في ذهنك؟"></textarea>
+            
+            <label>اختر الفيديو من جهازك:</label>
+            <input type="file" id="pVidFile" accept="video/*">
+            
+            <label>اختر الصورة الحصرية من جهازك:</label>
+            <input type="file" id="pImgFile" accept="image/*">
+            
+            <button class="btn-nav" id="uploadBtn" style="width:100%; margin-top:20px;" onclick="submitPost()">نشر في صفاوي موشن</button>
             <p onclick="closeModals()" style="color:red; cursor:pointer; margin-top:15px; text-align:center;">إلغاء</p>
         </div>
     </div>
 
-    <script>
-        // --- إعدادات الأدمن والحماية ---
-        const ADMIN_KEY = "safawy123"; 
-        const ADMIN_DISPLAY_HANDLE = "safawy_pro"; // اليوزر الذي سيظهر بدلاً من الباسورد
+    <footer>
+        <p>© 2024 جميع الحقوق محفوظة لـ <span>صفاوي موشن</span></p>
+        <div class="footer-links" style="margin-top:10px;">
+            <a href="#" onclick="alert('نحن نحمي بياناتك وفق سياسة الخصوصية.')">سياسة الخصوصية</a> | 
+            <a href="#" onclick="alert('تواصل مع صفاوي عبر تيك توك')">اتصل بنا</a>
+        </div>
+    </footer>
 
-        window.onload = function() {
-            showAd("أهلاً بك في النسخة الاحترافية 🚀", 5);
+    <script>
+        const ADMIN_KEY = "safawy123"; 
+        const ADMIN_HIDDEN_HANDLE = "safawy_pro";
+
+        window.onload = function() { checkUserStatus(); };
+
+        function checkUserStatus() {
             const user = JSON.parse(localStorage.getItem('safawy_user'));
             if (user) {
                 document.getElementById('btnRegister').style.display = 'none';
                 document.getElementById('btnPublish').style.display = 'block';
             }
-        };
+        }
 
-        function showAd(msg, seconds, callback) {
+        function showAdTimer(msg, seconds, callback) {
             const overlay = document.getElementById('ad-overlay');
             const timer = document.getElementById('ad-timer');
             document.getElementById('ad-status').innerText = msg;
@@ -120,19 +133,17 @@
         function saveProfile() {
             const name = document.getElementById('uName').value;
             const handle = document.getElementById('uHandle').value.replace('@', '');
-            if(!handle) return alert("أدخل بياناتك!");
-
+            if(!handle) return;
             const isAdmin = (handle === ADMIN_KEY);
             const userData = { 
                 name: isAdmin ? "المدير صفاوي 😎" : name, 
-                handle: isAdmin ? ADMIN_DISPLAY_HANDLE : handle, // إخفاء الباسورد فوراً
+                handle: isAdmin ? ADMIN_HIDDEN_HANDLE : handle, 
                 role: isAdmin ? "admin" : "user" 
             };
             localStorage.setItem('safawy_user', JSON.stringify(userData));
             location.reload();
         }
 
-        // عرض الفيديوهات مع نظام قفل الصور
         db.collection('all_posts').orderBy('time', 'desc').onSnapshot(snapshot => {
             const feed = document.getElementById('feed');
             feed.innerHTML = '';
@@ -143,53 +154,80 @@
                 const postId = doc.id;
                 const post = document.createElement('div');
                 post.className = 'post-card';
-                const deleteUI = (user.role === 'admin') ? `<button onclick="deletePost('${postId}')" style="float:left; color:red; background:none; border:none; cursor:pointer;">حذف 🗑️</button>` : '';
+                const deleteBtn = (user.role === 'admin') ? `<button onclick="deletePost('${postId}')" style="float:left; color:red; background:none; border:none; cursor:pointer; font-weight:bold;">حذف 🗑️</button>` : '';
 
                 post.innerHTML = `
                     <div class="user-info">
                         <img src="https://ui-avatars.com/api/?name=${data.userHandle}&background=00f2ea&color=000">
                         <small>@${data.userHandle} • ${data.userName}</small>
-                        ${deleteUI}
+                        ${deleteBtn}
                     </div>
                     <p>${data.desc}</p>
                     <video controls src="${data.vidUrl}" style="background:#000;"></video>
-                    
-                    <div id="locked-area-${postId}">
-                        <button class="btn-unlock" onclick="unlockContent('${postId}')">فتح المحتوى الحصري (شاهد إعلان)</button>
+                    <div id="lock-${postId}">
+                        <button class="btn-unlock" onclick="unlockSecret('${postId}')">فتح المحتوى الحصري (5ث إعلان)</button>
                     </div>
-                    <div id="hidden-img-${postId}" style="display:none;">
-                        <img src="${data.imgUrl}" class="hidden-img" style="display:block; width:100%;">
+                    <div id="secret-${postId}" style="display:none;">
+                        <img src="${data.imgUrl}" style="width:100%; border-radius:12px; margin-top:15px; border:2px solid var(--primary);">
                     </div>
                 `;
                 feed.append(post);
             });
         });
 
-        function unlockContent(postId) {
-            showAd("جاري فك تشفير الصورة الحصرية... 🔒", 5, () => {
-                document.getElementById(`locked-area-${postId}`).style.display = 'none';
-                document.getElementById(`hidden-img-${postId}`).style.display = 'block';
+        function unlockSecret(id) {
+            showAdTimer("جاري فك تشفير الصورة الحصرية... 🔒", 5, () => {
+                document.getElementById(`lock-${id}`).style.display = 'none';
+                document.getElementById(`secret-${id}`).style.display = 'block';
             });
         }
+
+        // تحويل الملف إلى كود Base64 للرفع
+        const toBase64 = file => new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        });
 
         async function submitPost() {
             const desc = document.getElementById('pDesc').value;
-            const vid = document.getElementById('pVidUrl').value;
-            const img = document.getElementById('pImgUrl').value;
+            const vidFile = document.getElementById('pVidFile').files[0];
+            const imgFile = document.getElementById('pImgFile').files[0];
             const user = JSON.parse(localStorage.getItem('safawy_user'));
+            const btn = document.getElementById('uploadBtn');
 
-            if(!desc || !vid || !img) return alert("أكمل جميع الحقول!");
+            if(!desc || !vidFile || !imgFile) return alert("يرجى اختيار الوصف والفيديو والصورة!");
 
-            await db.collection('all_posts').add({
-                desc, vidUrl: vid, imgUrl: img,
-                userName: user.name, userHandle: user.handle,
-                time: firebase.firestore.FieldValue.serverTimestamp()
-            });
-            alert("تم النشر بنجاح!");
-            closeModals();
+            btn.innerText = "جاري الرفع... انتظر قليلاً ⏳";
+            btn.disabled = true;
+
+            try {
+                const vidBase64 = await toBase64(vidFile);
+                const imgBase64 = await toBase64(imgFile);
+
+                await db.collection('all_posts').add({
+                    desc: desc,
+                    vidUrl: vidBase64,
+                    imgUrl: imgBase64,
+                    userName: user.name,
+                    userHandle: user.handle,
+                    time: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                alert("تم النشر بنجاح!");
+                location.reload();
+            } catch (e) {
+                alert("فشل الرفع: " + e.message);
+                btn.innerText = "نشر في صفاوي موشن";
+                btn.disabled = false;
+            }
         }
 
-        async function deletePost(id) { if(confirm("حذف نهائي؟")) await db.collection('all_posts').doc(id).delete(); }
+        async function deletePost(id) {
+            if(confirm("حذف نهائي؟")) await db.collection('all_posts').doc(id).delete();
+        }
+
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function closeModals() { document.querySelectorAll('.modal').forEach(m => m.style.display='none'); }
     </script>
