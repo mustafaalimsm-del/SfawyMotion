@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safawy Motion | صفاوي موشن</title>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <style>
+        :root { --primary: #00f2ea; --secondary: #ff0050; --dark: #050505; --glass: rgba(255, 255, 255, 0.05); }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: var(--dark); color: white; display: flex; flex-direction: column; min-height: 100vh; }
+
+        /* الهيدر */
+        nav { padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.9); border-bottom: 1px solid #222; position: sticky; top: 0; z-index: 100; }
+        .logo { font-size: 1.4rem; font-weight: 900; }
+        .logo span { color: var(--primary); }
+        .btn-nav { background: var(--primary); color: black; padding: 8px 15px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; }
+
+        /* المحتوى */
+        .main-content { flex: 1; padding: 20px; max-width: 600px; margin: 0 auto; width: 100%; }
+        .post-card { background: var(--glass); border-radius: 20px; border: 1px solid #222; margin-bottom: 25px; padding: 20px; overflow: hidden; position: relative; }
+        video { width: 100%; border-radius: 12px; background: #000; margin-top: 10px; }
+        .btn-unlock { background: linear-gradient(45deg, #6a11cb, #2575fc); color: white; width: 100%; padding: 12px; border-radius: 10px; border: none; cursor: pointer; margin-top: 15px; font-weight: bold; }
+        .hidden-img { width: 100%; border-radius: 12px; margin-top: 15px; display: none; border: 2px solid var(--primary); }
+
+        /* النوافذ */
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: none; justify-content: center; align-items: center; z-index: 2000; }
+        .modal-box { background: #1a1a1a; padding: 25px; border-radius: 20px; width: 90%; max-width: 450px; text-align: center; border: 1px solid #333; }
+        input, textarea { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #333; border-radius: 8px; background: #000; color: white; }
+        label { display: block; text-align: right; margin-top: 10px; font-size: 0.8rem; color: var(--primary); }
+
+        /* الفوتر */
+        footer { padding: 40px; text-align: center; border-top: 1px solid #222; background: #000; margin-top: auto; }
+        .tiktok-link { color: var(--primary); text-decoration: none; font-weight: bold; font-size: 1.1rem; display: inline-block; margin-top: 15px; padding: 8px 20px; border: 2px solid var(--primary); border-radius: 15px; transition: 0.3s; }
+        .tiktok-link:hover { background: var(--primary); color: black; }
+        
+        #ad-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 3000; display: none; flex-direction: column; align-items: center; justify-content: center; }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <div class="logo">صفاوي <span>موشن</span></div>
+        <div id="auth-zone">
+            <button class="btn-nav" id="btnRegister" onclick="openLogin()">سجل للنشر</button>
+            <button class="btn-nav" id="btnPublish" style="display:none; background:white;" onclick="openPublish()">+ انشر الآن</button>
+        </div>
+    </nav>
+
+    <div class="main-content" id="feed">
+        </div>
+
+    <footer>
+        <p style="color: #888; font-size: 0.9rem;">جميع الحقوق محفوظة لـ صفاوي موشن Sfawy Motion</p>
+        <p style="color: #888; font-size: 0.9rem;">© 2026</p>
+        <a href="https://www.tiktok.com/@v3_rc" target="_blank" class="tiktok-link">TikTok: @v3_rc</a>
+    </footer>
+
+    <div id="loginModal" class="modal">
+        <div class="modal-box">
+            <h3>تسجيل ناشر جديد</h3>
+            <div id="g_id_onload" data-client_id="YOUR_ID" data-callback="onGoogleSign"></div>
+            <div class="g_id_signin" data-type="standard" style="margin: 20px 0;"></div>
+            
+            <div id="profileSetup" style="display:none;">
+                <input type="text" id="uName" placeholder="الاسم (مثلاً: المبدع صفاوي)">
+                <input type="text" id="uHandle" placeholder="يوزر فريد (مثلاً: @safawy_motion)">
+                <button class="btn-nav" style="width:100%" onclick="saveProfile()">إتمام التسجيل</button>
+            </div>
+            <p style="color:red; cursor:pointer; margin-top:10px;" onclick="closeModals()">إغلاق</p>
+        </div>
+    </div>
+
+    <div id="publishModal" class="modal">
+        <div class="modal-box" style="text-align: right;">
+            <h3>نشر فيديو جديد</h3>
+            <p style="font-size: 0.7rem; color: #888;">* يجب إكمال جميع الحقول للنشر</p>
+            
+            <textarea id="pDesc" placeholder="اكتب وصفاً للمنشور..."></textarea>
+            
+            <label>اختر الفيديو:</label>
+            <input type="file" id="pVid" accept="video/*">
+            
+            <label>اختر الصورة الحصرية:</label>
+            <input type="file" id="pImg" accept="image/*">
+            
+            <button class="btn-nav" style="width:100%; margin-top:20px;" onclick="submitPost()">نشر في صفاوي موشن</button>
+            <p style="text-align:center; margin-top:10px; color:red; cursor:pointer;" onclick="closeModals()">إلغاء</p>
+        </div>
+    </div>
+
+    <div id="ad-overlay">
+        <h1 id="ad-timer" style="font-size: 5rem; color: var(--secondary);">5</h1>
+        <p>جارٍ معالجة طلبك.. إعلان لدعم صفاوي موشن</p>
+    </div>
+
+    <script>
+        function openLogin() { document.getElementById('loginModal').style.display = 'flex'; }
+        function openPublish() { document.getElementById('publishModal').style.display = 'flex'; }
+        function closeModals() { document.querySelectorAll('.modal').forEach(m => m.style.display='none'); }
+
+        function onGoogleSign(response) {
+            document.querySelector(".g_id_signin").style.display = 'none';
+            document.getElementById('profileSetup').style.display = 'block';
+        }
+
+        function saveProfile() {
+            const name = document.getElementById('uName').value;
+            const handle = document.getElementById('uHandle').value;
+            if(!name || !handle) return alert("يرجى كتابة الاسم واليوزر");
+            
+            document.getElementById('btnRegister').style.display = 'none';
+            document.getElementById('btnPublish').style.display = 'block';
+            closeModals();
+            alert("أهلاً بك يا ناشر! يمكنك الآن إضافة محتواك.");
+        }
+
+        // نظام النشر المشروط
+        function submitPost() {
+            const desc = document.getElementById('pDesc').value;
+            const vidFile = document.getElementById('pVid').files[0];
+            const imgFile = document.getElementById('pImg').files[0];
+
+            // شرط صفاوي: يجب وجود الوصف والفيديو والصورة
+            if (!desc || !vidFile || !imgFile) {
+                alert("خطأ: لا يمكنك النشر إلا بعد إضافة وصف وفيديو وصورة!");
+                return;
+            }
+
+            const vidUrl = URL.createObjectURL(vidFile);
+            const imgUrl = URL.createObjectURL(imgFile);
+
+            addPostToFeed(desc, vidUrl, imgUrl);
+            closeModals();
+            
+            // تنظيف الحقول بعد النشر
+            document.getElementById('pDesc').value = "";
+            document.getElementById('pVid').value = "";
+            document.getElementById('pImg').value = "";
+        }
+
+        function addPostToFeed(desc, vid, img) {
+            const feed = document.getElementById('feed');
+            const post = document.createElement('div');
+            post.className = 'post-card';
+            post.innerHTML = `
+                <p style="font-weight:bold;">${desc}</p>
+                <video controls src="${vid}"></video>
+                <button class="btn-unlock" onclick="startAd(this, '${img}')">احصل عليه (إعلان 5ث)</button>
+                <img class="hidden-img" src="${img}">
+            `;
+            feed.prepend(post);
+        }
+
+        function startAd(btn, imgSrc) {
+            const overlay = document.getElementById('ad-overlay');
+            const timer = document.getElementById('ad-timer');
+            overlay.style.display = 'flex';
+            let count = 5;
+            timer.innerText = count;
+            
+            let cd = setInterval(() => {
+                count--;
+                timer.innerText = count;
+                if(count <= 0) {
+                    clearInterval(cd);
+                    overlay.style.display = 'none';
+                    btn.style.display = 'none';
+                    const img = btn.nextElementSibling;
+                    img.style.display = 'block';
+                }
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
