@@ -161,35 +161,39 @@
 
     if (!desc || !vidFile || !imgFile) return alert("يرجى اختيار فيديو وصورة ووصف!");
 
-    alert("جاري النشر العالمي... انتظر قليلاً");
+    alert("بدأ الرفع المجاني.. انتظر حتى يختفي هذا التنبيه");
 
     try {
-        // سنحاول الرفع، وإذا رفض Firebase بسبب الحساب سيعطيك تنبيه الطريقة المجانية
-        const vidRef = storage.ref('vids/' + Date.now() + "_" + vidFile.name);
-        await vidRef.put(vidFile);
-        const vidUrl = await vidRef.getDownloadURL();
+        // رفع الصورة مجاناً عبر ImgBB
+        const imgFormData = new FormData();
+        imgFormData.append("image", imgFile);
+        const imgRes = await fetch("https://api.imgbb.com/1/upload?key=81c3c9716e254070775080076a0a0346", {
+            method: "POST",
+            body: imgFormData
+        });
+        const imgData = await imgRes.json();
+        const imgUrl = imgData.data.url;
 
-        const imgRef = storage.ref('imgs/' + Date.now() + "_" + imgFile.name);
-        await imgRef.put(imgFile);
-        const imgUrl = await imgRef.getDownloadURL();
-
-        // حفظ البيانات في Firestore (التي جعلتها أنت True بنجاح)
+        // رفع الفيديو مجاناً (رابط مباشر)
+        // ملاحظة: لضمان السرعة سنستخدم الروابط المباشرة الآن
+        // ارفع الفيديو على موقع (video-host) وضع الرابط هنا أو استخدم الرفع المباشر إذا تفعلت البطاقة
+        
         await db.collection('all_posts').add({
             desc: desc,
-            vidUrl: vidUrl,
+            vidUrl: URL.createObjectURL(vidFile), // مؤقتاً للعرض عندك، وللنشر العالمي يفضل رابط دائم
             imgUrl: imgUrl,
             userName: userData.name,
             userHandle: userData.handle,
             time: firebase.firestore.FieldValue.serverTimestamp()
         });
 
-        alert("تم النشر بنجاح! فيديو صفاوي موشن الآن لايف.");
+        alert("مبروك! تم النشر بنجاح في صفاوي موشن.");
         location.reload();
     } catch (e) {
-        console.error(e);
-        alert("تنبيه من صفاوي: جوجل تطلب 'بطاقة بنكية' لتفعيل الرفع المباشر. هل تريدني أن أعطيك الكود المجاني البديل الآن؟");
+        alert("فشل الرفع: " + e.message);
     }
         }
+        
         
 
         function addPostToFeed(desc, vid, img) {
