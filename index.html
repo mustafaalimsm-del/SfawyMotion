@@ -6,7 +6,29 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sfawy Motion | صفاوي موشن</title>
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
+
+<script>
+  // كود الربط الخاص بمشروعك (sfawy-e4f39)
+  const firebaseConfig = {
+    apiKey: "AIzaSyCpLDn2CMWObwSHCjWqh6s6TWLyPraXicI",
+    authDomain: "sfawy-e4f39.firebaseapp.com",
+    projectId: "sfawy-e4f39",
+    storageBucket: "sfawy-e4f39.firebasestorage.app",
+    messagingSenderId: "395891884699",
+    appId: "1:395891884699:web:bb324267db21bdfba8fc3e"
+  };
+  
+  // تشغيل Firebase في موقعك
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.firestore();
+  const storage = firebase.storage();
+</script>
+
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+    
     <style>
         :root { --primary: #00f2ea; --secondary: #ff0050; --dark: #050505; --glass: rgba(255, 255, 255, 0.05); }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
