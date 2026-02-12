@@ -95,23 +95,7 @@
         </div>
     </div>
 
-    <div id="publishModal" class="modal">
-        <div class="modal-box" style="text-align: right;">
-            <h3>نشر فيديو جديد</h3>
-            <p style="font-size: 0.7rem; color: #888;">* يجب إكمال جميع الحقول للنشر</p>
-            
-            <textarea id="pDesc" placeholder="اكتب وصفاً للمنشور..."></textarea>
-            
-            <label>اختر الفيديو:</label>
-            <input type="file" id="pVid" accept="video/*">
-            
-            <label>اختر الصورة الحصرية:</label>
-            <input type="file" id="pImg" accept="image/*">
-            
-            <button class="btn-nav" style="width:100%; margin-top:20px;" onclick="submitPost()">نشر في صفاوي موشن</button>
-            <p style="text-align:center; margin-top:10px; color:red; cursor:pointer;" onclick="closeModals()">إلغاء</p>
-        </div>
-    </div>
+</div>
 
     <div id="ad-overlay">
     <h1 id="ad-timer" style="font-size: 5rem; color: var(--secondary); z-index: 3001;">5</h1>
@@ -134,7 +118,22 @@
 
     <script>  // هذا الكود يتذكر حسابك تلقائياً عند فتح الموقع
 window.onload = function() {
-    const savedUser = localStorage.getItem('safawy_user');
+    const savedU<div id="publishModal" class="modal">
+    <div class="modal-box">
+        <h3>نشر فيديو جديد</h3>
+        <textarea id="pDesc" placeholder="اكتب وصفاً للمنشور..."></textarea>
+        
+        <label>رابط الفيديو (من تيك توك أو مباشر):</label>
+        <input type="text" id="pVidUrl" placeholder="الصق الرابط هنا...">
+        
+        <label>رابط صورة الغلاف:</label>
+        <input type="text" id="pImgUrl" placeholder="رابط صورة لتظهر قبل التشغيل">
+
+        <button class="btn-nav" onclick="submitPost()">انشر عبر تيك توك 🚀</button>
+        <p onclick="closeModals()" style="color:red; cursor:pointer;">إلغاء</p>
+    </div>
+</div>
+    ser = localStorage.getItem('safawy_user');
     if (savedUser) {
         document.getElementById('btnRegister').style.display = 'none';
         document.getElementById('btnPublish').style.display = 'block';
@@ -175,51 +174,34 @@ function saveProfile() {
         
         
 
-      async function submitPost() {
+      
+        async function submitPost() {
     const desc = document.getElementById('pDesc').value;
-    const vidFile = document.getElementById('pVid').files[0];
-    const imgFile = document.getElementById('pImg').files[0];
+    const vidUrl = document.getElementById('pVidUrl').value;
+    const imgUrl = document.getElementById('pImgUrl').value;
+    
+    // جلب بيانات تيك توك من ذاكرة المتصفح
     const userData = JSON.parse(localStorage.getItem('safawy_user')) || {name: "مبدع صفاوي", handle: "user"};
 
-    if (!desc || !vidFile || !imgFile) return alert("يرجى اختيار فيديو وصورة ووصف!");
-
-    alert("جاري ضغط الفيديو ونشره عالمياً... انتظر قليلاً");
+    if (!desc || !vidUrl) return alert("يرجى وضع الوصف ورابط الفيديو!");
 
     try {
-        // وظيفة ضغط ومعالجة الملفات (لتجنب عطل الذاكرة)
-        const processFile = (file, maxSize) => new Promise((resolve) => {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            reader.onload = () => {
-                let res = reader.result;
-                // إذا كان الملف كبيراً جداً، سنخبر المستخدم
-                if (res.length > 2000000) { 
-                     console.log("الملف كبير، جاري المحاولة...");
-                }
-                resolve(res);
-            };
-        });
-
-        const vidBase64 = await processFile(vidFile);
-        const imgBase64 = await processFile(imgFile);
-
-        // الحفظ في Firestore التي جعلتها True
+        // حفظ الرابط فقط (خفيف جداً على السيرفر)
         await db.collection('all_posts').add({
             desc: desc,
-            vidUrl: vidBase64,
-            imgUrl: imgBase64,
+            vidUrl: vidUrl,
+            imgUrl: imgUrl || 'https://via.placeholder.com/300', 
             userName: userData.name,
-            userHandle: userData.handle,
+            userHandle: userData.handle, 
             time: firebase.firestore.FieldValue.serverTimestamp()
         });
 
-        alert("تم النشر بنجاح أسطوري! صفاوي موشن لايف الآن.");
+        alert("تم النشر بنجاح! سيظهر الفيديو الآن للجميع.");
         location.reload();
     } catch (e) {
-        console.error(e);
-        alert("تنبيه: حجم الفيديو لا يزال كبيراً جداً على سعة Firebase المجانية. جرب فيديو 2 ثانية فقط.");
+        alert("حدث خطأ، تأكد من الاتصال بالإنترنت.");
     }
-      }
+        }
         
         
         
