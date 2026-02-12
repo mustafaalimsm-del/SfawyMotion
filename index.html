@@ -52,10 +52,10 @@
 <body>
 
     <div id="ad-overlay">
-        <p id="ad-status" style="margin-bottom: 20px;">جاري تجهيز الموقع العالمي...</p>
+        <p id="ad-status" style="margin-bottom: 20px;">جاري التحقق من أمان الموقع...</p>
         <div class="ad-timer-text" id="ad-timer">5</div>
         <div style="margin-top: 20px; width: 300px; height: 250px; background: #222;">
-            <p style="font-size: 0.7rem; color: #555;">إعلان مدعوم</p>
+            <p style="color:#555; padding-top:100px;">إعلان مدعوم</p>
         </div>
     </div>
 
@@ -73,7 +73,7 @@
         <div class="modal-box">
             <h3>ربط حساب تيك توك 📱</h3>
             <input type="text" id="uName" placeholder="اسمك المستعار">
-            <input type="text" id="uHandle" placeholder="يوزر تيك توك (أو كلمة السر للأدمن)">
+            <input type="text" id="uHandle" placeholder="يوزر تيك توك (الأدمن يضع الباسورد هنا)">
             <button class="btn-nav" style="width:100%; margin-top:10px;" onclick="saveProfile()">دخول</button>
             <p onclick="closeModals()" style="color:red; cursor:pointer; margin-top:15px; text-align:center;">إلغاء</p>
         </div>
@@ -82,31 +82,27 @@
     <div id="publishModal" class="modal">
         <div class="modal-box">
             <h3>انشر إبداعك 🚀</h3>
-            <textarea id="pDesc" placeholder="ماذا يدور في ذهنك؟"></textarea>
-            <label>اختر الفيديو:</label>
-            <input type="file" id="pVid" accept="video/*">
-            <label>اختر صورة الغلاف:</label>
-            <input type="file" id="pImg" accept="image/*">
-            <button class="btn-nav" id="uploadBtn" style="width:100%" onclick="submitPost()">نشر الآن</button>
-            <p onclick="closeModals()" id="cancelBtn" style="color:red; cursor:pointer; margin-top:15px; text-align:center;">إلغاء</p>
+            <textarea id="pDesc" placeholder="وصف الموشن..."></textarea>
+            <input type="text" id="pVidUrl" placeholder="رابط الفيديو الحصري">
+            <input type="text" id="pImgUrl" placeholder="رابط الصورة الحصرية (لن تظهر إلا بعد الإعلان)">
+            <button class="btn-nav" style="width:100%" onclick="submitPost()">نشر عالمي</button>
+            <p onclick="closeModals()" style="color:red; cursor:pointer; margin-top:15px; text-align:center;">إلغاء</p>
         </div>
     </div>
 
     <script>
-        const ADMIN_KEY = "safawy123"; // كلمة سر الأدمن الخاصة بك
+        // --- إعدادات الأدمن والحماية ---
+        const ADMIN_KEY = "safawy123"; 
+        const ADMIN_DISPLAY_HANDLE = "safawy_pro"; // اليوزر الذي سيظهر بدلاً من الباسورد
 
         window.onload = function() {
-            showAd("مرحباً بك في صفاوي موشن Pro...", 5);
-            checkUser();
-        };
-
-        function checkUser() {
+            showAd("أهلاً بك في النسخة الاحترافية 🚀", 5);
             const user = JSON.parse(localStorage.getItem('safawy_user'));
             if (user) {
                 document.getElementById('btnRegister').style.display = 'none';
                 document.getElementById('btnPublish').style.display = 'block';
             }
-        }
+        };
 
         function showAd(msg, seconds, callback) {
             const overlay = document.getElementById('ad-overlay');
@@ -121,27 +117,34 @@
             }, 1000);
         }
 
-        setInterval(() => { if(document.getElementById('ad-overlay').style.display !== 'flex') showAd("تحديث جودة البث...", 3); }, 120000);
-
         function saveProfile() {
             const name = document.getElementById('uName').value;
             const handle = document.getElementById('uHandle').value.replace('@', '');
-            if(!handle) return;
+            if(!handle) return alert("أدخل بياناتك!");
+
             const isAdmin = (handle === ADMIN_KEY);
-            const userData = { name: isAdmin ? "المدير صفاوي" : name, handle: handle, role: isAdmin ? "admin" : "user" };
+            const userData = { 
+                name: isAdmin ? "المدير صفاوي 😎" : name, 
+                handle: isAdmin ? ADMIN_DISPLAY_HANDLE : handle, // إخفاء الباسورد فوراً
+                role: isAdmin ? "admin" : "user" 
+            };
             localStorage.setItem('safawy_user', JSON.stringify(userData));
             location.reload();
         }
 
+        // عرض الفيديوهات مع نظام قفل الصور
         db.collection('all_posts').orderBy('time', 'desc').onSnapshot(snapshot => {
             const feed = document.getElementById('feed');
             feed.innerHTML = '';
             const user = JSON.parse(localStorage.getItem('safawy_user')) || {};
+
             snapshot.forEach(doc => {
                 const data = doc.data();
+                const postId = doc.id;
                 const post = document.createElement('div');
                 post.className = 'post-card';
-                const deleteUI = (user.role === 'admin') ? `<button onclick="deletePost('${doc.id}')" style="float:left; color:red; background:none; border:none; cursor:pointer;">حذف 🗑️</button>` : '';
+                const deleteUI = (user.role === 'admin') ? `<button onclick="deletePost('${postId}')" style="float:left; color:red; background:none; border:none; cursor:pointer;">حذف 🗑️</button>` : '';
+
                 post.innerHTML = `
                     <div class="user-info">
                         <img src="https://ui-avatars.com/api/?name=${data.userHandle}&background=00f2ea&color=000">
@@ -149,46 +152,44 @@
                         ${deleteUI}
                     </div>
                     <p>${data.desc}</p>
-                    <video controls poster="${data.imgUrl}" src="${data.vidUrl}"></video>
-                    <button class="btn-unlock" onclick="unlockContent(this, '${data.imgUrl}')">فتح المحتوى الحصري</button>
-                    <img class="hidden-img" src="${data.imgUrl}">
+                    <video controls src="${data.vidUrl}" style="background:#000;"></video>
+                    
+                    <div id="locked-area-${postId}">
+                        <button class="btn-unlock" onclick="unlockContent('${postId}')">فتح المحتوى الحصري (شاهد إعلان)</button>
+                    </div>
+                    <div id="hidden-img-${postId}" style="display:none;">
+                        <img src="${data.imgUrl}" class="hidden-img" style="display:block; width:100%;">
+                    </div>
                 `;
-                feed.appendChild(post);
+                feed.append(post);
             });
         });
 
-        async function deletePost(id) { if(confirm("حذف نهائي؟")) await db.collection('all_posts').doc(id).delete(); }
-
-        function unlockContent(btn, img) { showAd("فك تشفير الملفات...", 5, () => { btn.style.display = 'none'; btn.nextElementSibling.style.display = 'block'; }); }
+        function unlockContent(postId) {
+            showAd("جاري فك تشفير الصورة الحصرية... 🔒", 5, () => {
+                document.getElementById(`locked-area-${postId}`).style.display = 'none';
+                document.getElementById(`hidden-img-${postId}`).style.display = 'block';
+            });
+        }
 
         async function submitPost() {
             const desc = document.getElementById('pDesc').value;
-            const vidFile = document.getElementById('pVid').files[0];
-            const imgFile = document.getElementById('pImg').files[0];
+            const vid = document.getElementById('pVidUrl').value;
+            const img = document.getElementById('pImgUrl').value;
             const user = JSON.parse(localStorage.getItem('safawy_user'));
 
-            if(!desc || !vidFile || !imgFile) return alert("يرجى اختيار الوصف والفيديو والصورة!");
-
-            const btn = document.getElementById('uploadBtn');
-            btn.innerText = "جاري الضغط والنشر... يرجى الانتظار";
-            btn.disabled = true;
-
-            const toBase64 = file => new Promise((res) => {
-                const r = new FileReader(); r.readAsDataURL(file); r.onload = () => res(r.result);
-            });
-
-            const vidBase64 = await toBase64(vidFile);
-            const imgBase64 = await toBase64(imgFile);
+            if(!desc || !vid || !img) return alert("أكمل جميع الحقول!");
 
             await db.collection('all_posts').add({
-                desc, vidUrl: vidBase64, imgUrl: imgBase64,
+                desc, vidUrl: vid, imgUrl: img,
                 userName: user.name, userHandle: user.handle,
                 time: firebase.firestore.FieldValue.serverTimestamp()
             });
-            
-            location.reload();
+            alert("تم النشر بنجاح!");
+            closeModals();
         }
 
+        async function deletePost(id) { if(confirm("حذف نهائي؟")) await db.collection('all_posts').doc(id).delete(); }
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function closeModals() { document.querySelectorAll('.modal').forEach(m => m.style.display='none'); }
     </script>
