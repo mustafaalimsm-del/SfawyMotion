@@ -239,6 +239,42 @@
 
         function openModal(id) { document.getElementById(id).style.display = 'flex'; }
         function closeModals() { document.querySelectorAll('.modal').forEach(m => m.style.display='none'); }
+        <footer>
+    <div style="margin-bottom: 15px;">
+        <a href="#" onclick="openModal('pagesModal')" style="color:#888; text-decoration:none; font-size:0.85rem; border-bottom: 1px solid #333;">
+            سياسة الخصوصية واتصل بنا
+        </a>
+    </div>
+    <p>© 2026 جميع الحقوق محفوظة لـ <span>صفاوي موشن</span></p>
+</footer>
+        
     </script>
+    <div id="pagesModal" class="modal">
+    <div class="modal-box" style="max-height: 85vh; overflow-y: auto; border: 2px solid var(--primary);">
+        <h2 style="color: var(--primary); margin-bottom: 20px;">المعلومات القانونية 📋</h2>
+        
+        <section style="text-align: right; margin-bottom: 25px;">
+            <h3 style="color: white; border-right: 3px solid var(--secondary); padding-right: 10px;">سياسة الخصوصية</h3>
+            <p style="font-size: 0.85rem; color: #bbb; line-height: 1.7; margin-top: 10px;">
+                في <strong>صفاوي موشن</strong>، نضع خصوصيتك في مقدمة أولوياتنا. نحن نستخدم تقنيات متطورة وملفات تعريف الارتباط (Cookies) لضمان تقديم أفضل تجربة مستخدم ولعرض إعلانات مخصصة عبر <strong>Google AdSense</strong>. 
+                <br>• لا نقوم ببيع بياناتك لأي جهة خارجية.
+                <br>• جميع بيانات الرفع مشفرة ومؤمنة تماماً.
+            </p>
+        </section>
+
+        <hr style="border: 0; border-top: 1px solid #333; margin: 20px 0;">
+
+        <section style="text-align: right;">
+            <h3 style="color: white; border-right: 3px solid var(--primary); padding-right: 10px;">اتصل بنا</h3>
+            <p style="font-size: 0.85rem; color: #bbb; margin: 10px 0;">لديك استفسار؟ راسلنا عبر البريد الرسمي للمنصة:</p>
+            <div style="background: #000; padding: 12px; border-radius: 8px; border: 1px solid #222; text-align: center;">
+                <code style="color: var(--primary); font-weight: bold;">safawy.motion@gmail.com</code>
+            </div>
+        </section>
+
+        <button class="btn-nav" style="width:100%; margin-top:25px;" onclick="closeModals()">إغلاق النافذة</button>
+    </div>
+    </div>
+    
 </body>
 </html>
