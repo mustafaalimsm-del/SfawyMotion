@@ -184,7 +184,7 @@
 
         // إعلان عند الحصول على المحتوى الحصري
         function unlockSecret(id) {
-            runAd("جاري فك تشفير البيانات الحصرية...", 5, () => {
+            runAd("جاري فك تشفير البيانات الحصرية...", 45, () => {
                 document.getElementById(`lock-${id}`).style.display = 'none';
                 document.getElementById(`secret-${id}`).style.display = 'block';
             });
@@ -198,7 +198,7 @@
 
             if(!desc || !vidFile || !imgFile) return alert("أكمل بيانات المنشور!");
 
-            runAd("جاري تأمين وفحص الموشن قبل الرفع...", 5, () => {
+            runAd("جاري تأمين وفحص الموشن قبل الرفع...", 45, () => {
                 submitPost(desc, vidFile, imgFile);
             });
         }
