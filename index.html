@@ -24,28 +24,6 @@
     </script>
 
     <style>
-
-        .post-number {
-    background-color: #00f2ea; /* لون يطابق الثيم الخاص بك */
-    color: #000;
-    width: 22px;
-    height: 22px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    font-size: 12px;
-    font-weight: bold;
-    margin-right: 8px; /* مسافة بسيطة عن الحافة اليسرى */
-}
-
-.user-info {
-    display: flex;
-    align-items: center;
-    width: 100%;
-}
-        
-        
         :root { --primary: #00f2ea; --secondary: #ff0050; --dark: #050505; --glass: rgba(255, 255, 255, 0.05); }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
         body { background-color: var(--dark); color: white; display: flex; flex-direction: column; min-height: 100vh; }
@@ -176,35 +154,29 @@
             feed.innerHTML = '';
             const user = JSON.parse(localStorage.getItem('safawy_user')) || {};
 
-            snapshot.forEach(doc, index => {
+            snapshot.forEach(doc => {
                 const data = doc.data();
                 const postId = doc.id;
                 const post = document.createElement('div');
-                const postNumber = index + 1;
                 post.className = 'post-card';
                 const deleteBtn = (user.role === 'admin') ? `<button onclick="deletePost('${postId}')" style="float:left; color:#ff0050; background:none; border:none; cursor:pointer; font-size:0.7rem;">حذف 🗑️</button>` : '';
 
-                          post.innerHTML = `
-            <div class="user-info">
-                <div class="post-number">${postNumber}</div>
-                <img src="https://ui-avatars.com/api/?name=${data.userName}&background=00f2ea&color=000">
-                <strong>${data.userName}</strong>
-                ${deleteBtn}
-            </div>
-            <p style="font-size:0.9rem; line-height:1.4;">${data.desc}</p>
-            <video controls src="${data.vidUrl}"></video>
-            <div id="lock-${postId}">
-                <button class="btn-unlock" onclick="unlockSecret('${postId}')">فتح المحتوى الحصري 🔑</button>
-            </div>
-            <div id="secret-${postId}" style="display:none;">
-                <img src="${data.imgUrl}" style="width:100%; border-radius:12px; margin-top:15px; border:2px solid #111;">
-            </div>
-        `;
-                
-                
-    
-                    
-                    
+                post.innerHTML = `
+                    <div class="user-info">
+                        <img src="https://ui-avatars.com/api/?name=${data.userName}&background=00f2ea&color=000">
+                        <strong>${data.userName}</strong>
+                        ${deleteBtn}
+                    </div>
+                    <p style="font-size:0.9rem; line-height:1.4;">${data.desc}</p>
+                    <video controls src="${data.vidUrl}"></video>
+                    <div id="lock-${postId}">
+                        <button class="btn-unlock" onclick="unlockSecret('${postId}')">فتح المحتوى الحصري</button>
+                    </div>
+                    <div id="secret-${postId}" style="display:none;">
+                        <img src="${data.imgUrl}" style="width:100%; border-radius:12px; margin-top:15px; border:2px solid var(--primary);">
+                    </div>
+                `;
+                feed.append(post);
             });
         });
 
