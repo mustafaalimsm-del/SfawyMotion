@@ -184,15 +184,17 @@
                 post.className = 'post-card';
                 const deleteBtn = (user.role === 'admin') ? `<button onclick="deletePost('${postId}')" style="float:left; color:#ff0050; background:none; border:none; cursor:pointer; font-size:0.7rem;">حذف 🗑️</button>` : '';
 
-                post.innerHTML = `
-                    
-                // استبدل ما بعد علامة ` في السطر 187 بهذا:
-<div class="user-info">
-    <div class="post-number">${postNumber}</div>
-    <img src="https://ui-avatars.com/api/?name=${data.userName}&background=00f2ea&color=000">
-    <strong>${data.userName}</strong>
-    ${deleteBtn}
-</div>
+                        post.innerHTML = `
+            <div class="user-info">
+                <div class="post-number">${postNumber}</div>
+                <img src="https://ui-avatars.com/api/?name=${data.userName}&background=00f2ea&color=000">
+                <strong>${data.userName}</strong>
+                ${deleteBtn}
+            </div>
+            <p style="font-size:0.9rem; line-height:1.4;">${data.desc}</p>
+            <video controls src="${data.vidUrl}"></video>
+        `;
+                
     
                     
                     <p style="font-size:0.9rem; line-height:1.4;">${data.desc}</p>
