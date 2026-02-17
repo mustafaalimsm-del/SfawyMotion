@@ -184,7 +184,7 @@
                 post.className = 'post-card';
                 const deleteBtn = (user.role === 'admin') ? `<button onclick="deletePost('${postId}')" style="float:left; color:#ff0050; background:none; border:none; cursor:pointer; font-size:0.7rem;">حذف 🗑️</button>` : '';
 
-                        post.innerHTML = `
+                                post.innerHTML = `
             <div class="user-info">
                 <div class="post-number">${postNumber}</div>
                 <img src="https://ui-avatars.com/api/?name=${data.userName}&background=00f2ea&color=000">
@@ -193,20 +193,17 @@
             </div>
             <p style="font-size:0.9rem; line-height:1.4;">${data.desc}</p>
             <video controls src="${data.vidUrl}"></video>
+            <div id="lock-${postId}">
+                <button class="btn-unlock" onclick="unlockSecret('${postId}')">فتح المحتوى الحصري 🔑</button>
+            </div>
+            <div id="secret-${postId}" style="display:none;">
+                <img src="${data.imgUrl}" style="width:100%; border-radius:12px; margin-top:15px; border:2px solid #111;">
+            </div>
         `;
                 
     
                     
-                    <p style="font-size:0.9rem; line-height:1.4;">${data.desc}</p>
-                    <video controls src="${data.vidUrl}"></video>
-                    <div id="lock-${postId}">
-                        <button class="btn-unlock" onclick="unlockSecret('${postId}')">فتح المحتوى الحصري</button>
-                    </div>
-                    <div id="secret-${postId}" style="display:none;">
-                        <img src="${data.imgUrl}" style="width:100%; border-radius:12px; margin-top:15px; border:2px solid var(--primary);">
-                    </div>
-                `;
-                feed.append(post);
+                    
             });
         });
 
