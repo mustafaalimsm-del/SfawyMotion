@@ -154,17 +154,15 @@
             feed.innerHTML = '';
             const user = JSON.parse(localStorage.getItem('safawy_user')) || {};
 
-            snapshot.forEach(doc, index => {
+            snapshot.forEach(doc => {
                 const data = doc.data();
                 const postId = doc.id;
                 const post = document.createElement('div');
                 post.className = 'post-card';
-                const postNumber = index + 1;
                 const deleteBtn = (user.role === 'admin') ? `<button onclick="deletePost('${postId}')" style="float:left; color:#ff0050; background:none; border:none; cursor:pointer; font-size:0.7rem;">حذف 🗑️</button>` : '';
 
                 post.innerHTML = `
                     <div class="user-info">
-                    class="post-number">${postNumber}</div>
                         <img src="https://ui-avatars.com/api/?name=${data.userName}&background=00f2ea&color=000">
                         <strong>${data.userName}</strong>
                         ${deleteBtn}
