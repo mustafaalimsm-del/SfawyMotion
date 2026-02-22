@@ -1,15 +1,282 @@
 <!DOCTYPE html>
-<html>
+<html lang="ar" dir="rtl">
 <head>
-    <title>الموقع قيد التحديث</title>
+    <meta name="2da4a436366e0772286dacc41db0a12f68e9bcac" content="2da4a436366e0772286dacc41db0a12f68e9bcac" />
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4660461160504958"
+     crossorigin="anonymous"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sfawy Motion | صفاوي موشن</title>
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+    <script>
+      const firebaseConfig = {
+        apiKey: "AIzaSyCpLDn2CMWObwSHCjWqh6s6TWLyPraXicI",
+        authDomain: "sfawy-e4f39.firebaseapp.com",
+        projectId: "sfawy-e4f39",
+        storageBucket: "sfawy-e4f39.firebasestorage.app",
+        messagingSenderId: "395891884699",
+        appId: "1:395891884699:web:bb324267db21bdfba8fc3e"
+      };
+      firebase.initializeApp(firebaseConfig);
+      const db = firebase.firestore();
+    </script>
+
     <style>
-        body { text-align: center; padding: 100px; font-family: sans-serif; }
-        h1 { color: #333; }
-        p { color: #666; }
+        :root { --primary: #00f2ea; --secondary: #ff0050; --dark: #050505; --glass: rgba(255, 255, 255, 0.05); }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background-color: var(--dark); color: white; display: flex; flex-direction: column; min-height: 100vh; }
+
+        nav { padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; background: rgba(0,0,0,0.9); border-bottom: 1px solid #222; position: sticky; top: 0; z-index: 100; }
+        .logo { font-size: 1.4rem; font-weight: 900; color: white; text-decoration: none; }
+        .logo span { color: var(--primary); }
+        .btn-nav { background: var(--primary); color: black; padding: 8px 15px; border-radius: 10px; border: none; cursor: pointer; font-weight: bold; }
+
+        .main-content { flex: 1; padding: 20px; max-width: 600px; margin: 0 auto; width: 100%; }
+        .post-card { background: var(--glass); border-radius: 20px; border: 1px solid #222; margin-bottom: 25px; padding: 20px; }
+        .user-info { display: flex; align-items: center; margin-bottom: 10px; }
+        .user-info img { width: 35px; height: 35px; border-radius: 50%; margin-left: 10px; border: 1px solid var(--primary); }
+        video { width: 100%; border-radius: 12px; background: #000; margin-top: 10px; border: 1px solid #333; }
+        
+        .btn-unlock { background: linear-gradient(45deg, var(--secondary), #ff4d8d); color: white; width: 100%; padding: 12px; border-radius: 10px; border: none; cursor: pointer; margin-top: 15px; font-weight: bold; }
+        
+        footer { padding: 25px; text-align: center; background: #000; border-top: 1px solid #222; font-size: 0.8rem; color: #666; }
+
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); display: none; justify-content: center; align-items: center; z-index: 2000; }
+        .modal-box { background: #1a1a1a; padding: 25px; border-radius: 20px; width: 90%; max-width: 450px; border: 1px solid #333; }
+        input, textarea { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #333; border-radius: 8px; background: #000; color: white; text-align: right; }
+
+        /* شاشة الإعلان الذكية */
+        #ad-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #050505; z-index: 9999; display: none; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+        .loader-ring { width: 80px; height: 80px; border: 5px solid #111; border-top: 5px solid var(--primary); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .ad-timer-num { font-size: 3rem; color: white; font-weight: 900; margin-bottom: 10px; }
     </style>
 </head>
 <body>
-    <h1>الموقع قيد الصيانة مؤقتاً 🛠️</h1>
-    <p>نعمل على تحسين تجربة "صفاوي موشن" لنعود إليكم بشكل أفضل قريباً.</p>
+
+    <div id="ad-overlay">
+        <div class="loader-ring"></div>
+        <div class="ad-timer-num" id="ad-timer">5</div>
+        <p id="ad-status" style="color: #888; letter-spacing: 1px;">جاري المعالجة...</p>
+    </div>
+
+    <nav>
+        <a href="#" class="logo">صفاوي <span>موشن</span></a>
+        <div id="auth-zone">
+            <button class="btn-nav" id="btnRegister" onclick="openModal('loginModal')">دخول</button>
+            <button class="btn-nav" id="btnPublish" style="display:none; background:white;" onclick="openModal('publishModal')">+ انشر إبداعك</button>
+        </div>
+    </nav>
+
+    <div class="main-content" id="feed"></div>
+
+    <div id="loginModal" class="modal">
+        <div class="modal-box">
+            <h3>مرحباً بك 📱</h3>
+            <input type="text" id="uName" placeholder="الاسم المستعار (يظهر للجميع)">
+            <input type="text" id="uHandle" placeholder="يوزر الحساب (اختياري)">
+            <button class="btn-nav" style="width:100%; margin-top:10px;" onclick="saveProfile()">ابدأ الآن</button>
+        </div>
+    </div>
+
+    <div id="publishModal" class="modal">
+        <div class="modal-box">
+            <h3>نشر موشن 🚀</h3>
+            <textarea id="pDesc" placeholder="عن ماذا يتحدث الموشن؟"></textarea>
+            <label style="font-size: 0.8rem; color: var(--primary);">الفيديو (MP4):</label>
+            <input type="file" id="pVidFile" accept="video/*">
+            <label style="font-size: 0.8rem; color: var(--primary);">الصورة الحصرية (JPG/PNG):</label>
+            <input type="file" id="pImgFile" accept="image/*">
+            <button class="btn-nav" id="uploadBtn" style="width:100%; margin-top:20px;" onclick="handlePublishWithAd()">نشر الموشن</button>
+            <p onclick="closeModals()" style="color:#555; cursor:pointer; margin-top:15px; text-align:center;">إلغاء</p>
+        </div>
+    </div>
+
+
+
+    <script>
+        const ADMIN_PASS = "safawy123"; 
+
+        window.onload = function() {
+            // إعلان عند دخول الموقع
+            runAd("جاري تهيئة منصة صفاوي موشن...", 5, () => {
+                checkUserStatus();
+            });
+        };
+
+        // محرك الإعلانات الموحد (5 ثوانٍ)
+        function runAd(msg, seconds, callback) {
+            const overlay = document.getElementById('ad-overlay');
+            const timer = document.getElementById('ad-timer');
+            const status = document.getElementById('ad-status');
+            status.innerText = msg;
+            overlay.style.display = 'flex';
+            
+            let count = seconds;
+            timer.innerText = count;
+            
+            let interval = setInterval(() => {
+                count--;
+                timer.innerText = count;
+                if(count <= 0) {
+                    clearInterval(interval);
+                    overlay.style.display = 'none';
+                    if(callback) callback();
+                }
+            }, 1000);
+        }
+
+        function checkUserStatus() {
+            const user = JSON.parse(localStorage.getItem('safawy_user'));
+            if (user) {
+                document.getElementById('btnRegister').style.display = 'none';
+                document.getElementById('btnPublish').style.display = 'block';
+            }
+        }
+
+        function saveProfile() {
+            const name = document.getElementById('uName').value.trim();
+            const handle = document.getElementById('uHandle').value.trim();
+            if(!name) return alert("الاسم مطلوب!");
+            const isAdmin = (handle === ADMIN_PASS);
+            const userData = { 
+                name: isAdmin ? "المدير صفاوي 😎" : name, 
+                role: isAdmin ? "admin" : "user" 
+            };
+            localStorage.setItem('safawy_user', JSON.stringify(userData));
+            location.reload();
+        }
+
+        db.collection('all_posts').orderBy('time', 'desc').onSnapshot(snapshot => {
+            const feed = document.getElementById('feed');
+            feed.innerHTML = '';
+            const user = JSON.parse(localStorage.getItem('safawy_user')) || {};
+
+            snapshot.forEach(doc => {
+                const data = doc.data();
+                const postId = doc.id;
+                const post = document.createElement('div');
+                post.className = 'post-card';
+                const deleteBtn = (user.role === 'admin') ? `<button onclick="deletePost('${postId}')" style="float:left; color:#ff0050; background:none; border:none; cursor:pointer; font-size:0.7rem;">حذف 🗑️</button>` : '';
+
+                post.innerHTML = `
+                    <div class="user-info">
+                        <img src="https://ui-avatars.com/api/?name=${data.userName}&background=00f2ea&color=000">
+                        <strong>${data.userName}</strong>
+                        ${deleteBtn}
+                    </div>
+                    <p style="font-size:0.9rem; line-height:1.4;">${data.desc}</p>
+                    <video controls src="${data.vidUrl}"></video>
+                    <div id="lock-${postId}">
+                        <button class="btn-unlock" onclick="unlockSecret('${postId}')">فتح المحتوى الحصري</button>
+                    </div>
+                    <div id="secret-${postId}" style="display:none;">
+                        <img src="${data.imgUrl}" style="width:100%; border-radius:12px; margin-top:15px; border:2px solid var(--primary);">
+                    </div>
+                `;
+                feed.append(post);
+            });
+        });
+
+        // إعلان عند الحصول على المحتوى الحصري
+        function unlockSecret(id) {
+            runAd("جاري فك تشفير البيانات الحصرية...", 45, () => {
+                document.getElementById(`lock-${id}`).style.display = 'none';
+                document.getElementById(`secret-${id}`).style.display = 'block';
+            });
+        }
+
+        // إعلان عند النشر
+        function handlePublishWithAd() {
+            const desc = document.getElementById('pDesc').value;
+            const vidFile = document.getElementById('pVidFile').files[0];
+            const imgFile = document.getElementById('pImgFile').files[0];
+
+            if(!desc || !vidFile || !imgFile) return alert("أكمل بيانات المنشور!");
+
+            runAd("جاري تأمين وفحص الموشن قبل الرفع...", 45, () => {
+                submitPost(desc, vidFile, imgFile);
+            });
+        }
+
+        const toBase64 = file => new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = () => resolve(reader.result);
+            reader.onerror = error => reject(error);
+        });
+
+        async function submitPost(desc, vidFile, imgFile) {
+            const btn = document.getElementById('uploadBtn');
+            const user = JSON.parse(localStorage.getItem('safawy_user'));
+            
+            btn.innerText = "جاري الرفع النهائي... ⏳";
+            btn.disabled = true;
+
+            try {
+                const vidBase64 = await toBase64(vidFile);
+                const imgBase64 = await toBase64(imgFile);
+                await db.collection('all_posts').add({
+                    desc, vidUrl: vidBase64, imgUrl: imgBase64,
+                    userName: user.name,
+                    time: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                location.reload();
+            } catch (e) {
+                alert("حدث خطأ أثناء الرفع");
+                btn.disabled = false;
+                btn.innerText = "نشر الآن";
+            }
+        }
+
+        async function deletePost(id) {
+            if(confirm("حذف هذا الموشن؟")) await db.collection('all_posts').doc(id).delete();
+        }
+
+        function openModal(id) { document.getElementById(id).style.display = 'flex'; }
+        function closeModals() { document.querySelectorAll('.modal').forEach(m => m.style.display='none'); }
+        </script>
+        <footer>
+    <div style="margin-bottom: 15px;">
+        <a href="#" onclick="openModal('pagesModal')" style="color:#888; text-decoration:none; font-size:0.85rem; border-bottom: 1px solid #333;">
+            سياسة الخصوصية واتصل بنا
+        </a>
+    </div>
+    <p>© 2026 جميع الحقوق محفوظة لـ <span>صفاوي موشن</span></p>
+</footer>
+        
+
+    <div id="pagesModal" class="modal">
+    <div class="modal-box" style="max-height: 85vh; overflow-y: auto; border: 2px solid var(--primary);">
+        <h2 style="color: var(--primary); margin-bottom: 20px;">المعلومات القانونية 📋</h2>
+        
+        <section style="text-align: right; margin-bottom: 25px;">
+            <h3 style="color: white; border-right: 3px solid var(--secondary); padding-right: 10px;">سياسة الخصوصية</h3>
+            <p style="font-size: 0.85rem; color: #bbb; line-height: 1.7; margin-top: 10px;">
+                في <strong>صفاوي موشن</strong>، نضع خصوصيتك في مقدمة أولوياتنا. نحن نستخدم تقنيات متطورة وملفات تعريف الارتباط (Cookies) لضمان تقديم أفضل تجربة مستخدم ولعرض إعلانات مخصصة عبر <strong>Google AdSense</strong>. 
+                <br>• لا نقوم ببيع بياناتك لأي جهة خارجية.
+                <br>• جميع بيانات الرفع مشفرة ومؤمنة تماماً.
+            </p>
+        </section>
+
+        <hr style="border: 0; border-top: 1px solid #333; margin: 20px 0;">
+
+        <section style="text-align: right;">
+            <h3 style="color: white; border-right: 3px solid var(--primary); padding-right: 10px;">اتصل بنا</h3>
+            <p style="font-size: 0.85rem; color: #bbb; margin: 10px 0;">لديك استفسار؟ راسلنا عبر حسابي التيك توك :</p>
+            <div style="background: #000; padding: 12px; border-radius: 8px; border: 1px solid #222; text-align: center;">
+                <code style="color: var(--primary); font-weight: bold;">https://www.tiktok.com/@v3_rc?_r=1&_t=ZS-93yV2e8ysps</code>
+            </div>
+        </section>
+
+        <button class="btn-nav" style="width:100%; margin-top:25px;" onclick="closeModals()">إغلاق النافذة</button>
+    </div>
+    </div>
+
+    <script src="https://pl28755426.effectivegatecpm.com/7f/6e/2e/7f6e2e479299c964a8afd3349b1bf963.js"></script>
+
 </body>
 </html>
